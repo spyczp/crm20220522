@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atom.crm.workbench.dao.ActivityDao">
+
+    <update id="update">
+
+        update tbl_activity
+        set owner = #{owner}, name = #{name}, startDate = #{startDate}, endDate = #{endDate}, cost = #{cost}, description = #{description},
+            editTime = #{editTime}, editBy = #{editBy}
+        where id = #{id}
+
+    </update>
+
+    <select id="getById2" resultType="com.atom.crm.workbench.domain.Activity">
+
+        select a.id as id, u.name as owner, a.name as name, a.startDate as startDate, a.endDate as endDate, a.cost as cost, a.description as description,
+               a.createTime as createTime, a.createBy as createBy, a.editTime as editTime, a.editBy as editBy
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner = u.id
+        where a.id = #{id}
+
+    </select>
+
+    <select id="getById" resultType="com.atom.crm.workbench.domain.Activity">
+
+        select * from tbl_activity where id = #{id}
+
+    </select>
+
+
+    <delete id="deleteByIds">
+
+        delete from tbl_activity where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+
+            #{id}
+
+        </foreach>
+
+    </delete>
+
+
+    <insert id="save">
+
+        insert into tbl_activity(
+            id,
+            owner,
+            name,
+            startDate,
+            endDate,
+            cost,
+            description,
+            createTime,
+            createBy
+        ) values(
+            #{id},
+            #{owner},
+            #{name},
+            #{startDate},
+            #{endDate},
+            #{cost},
+            #{description},
+            #{createTime},
+            #{createBy})
+
+    </insert>
+
+    <select id="getTotalByCondition" resultType="java.lang.Integer">
+
+        select count(*)
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner = u.id
+        <where>
+
+            <if test="name != null and name != ''">
+                a.name like '%' #{name} '%'
+            </if>
+
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+
+        </where>
+
+    </select>
+
+
+
+    <select id="getDataListByCondition" resultType="com.atom.crm.workbench.domain.Activity">
+
+        select a.id, u.name as owner, a.name, a.startDate, a.endDate
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner = u.id
+        <where>
+            
+            <if test="name != null and name != ''">
+                a.name like '%' #{name} '%'
+            </if>
+            
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+
+        </where>
+
+        order by a.createTime desc
+
+        limit #{skipCount}, #{pageSize}
+
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
