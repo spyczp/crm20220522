@@ -13,7 +13,7 @@
 
     <select id="getUserList" resultType="com.atom.crm.settings.domain.User">
 
-        select * from tbl_user;
+        select * from tbl_user
 
     </select>
 	

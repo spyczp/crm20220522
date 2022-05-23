@@ -5,6 +5,11 @@
 
 <mapper namespace="com.atom.crm.settings.dao.DicTypeDao">
 
+    <select id="getAllCode" resultType="java.lang.String">
+
+        select code from tbl_dic_type
+
+    </select>
 
 
 </mapper>

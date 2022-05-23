@@ -5,7 +5,11 @@
 
 <mapper namespace="com.atom.crm.settings.dao.DicValueDao">
 
+    <select id="getByCode" resultType="com.atom.crm.settings.domain.DicValue">
 
+        select * from tbl_dic_value where typeCode = #{dicTypeCode}
+
+    </select>
 
 </mapper>
 
