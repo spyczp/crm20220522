@@ -5,7 +5,83 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.ClueDao">
 	
-	
+	<select id="getCountByCondition" resultType="int">
+
+        select count(*) from tbl_clue
+        <where>
+            
+            <if test="fullname != null and fullname != ''">
+                fullname like '%' #{fullname} '%'
+            </if>
+
+            <if test="company != null and company != ''">
+                and company like '%' #{company} '%'
+            </if>
+
+            <if test="phone != null and phone != ''">
+                and phone like  '%' #{phone} '%'
+            </if>
+
+            <if test="owner != null and owner != ''">
+                and owner like '%' #{owner} '%'
+            </if>
+
+            <if test="mphone != null and mphone != ''">
+                and mphone like '%' #{mphone} '%'
+            </if>
+
+            <if test="source != null and source != ''">
+                and source like '%' #{source} '%'
+            </if>
+
+            <if test="state != null and state != ''">
+                and state like '%' #{state} '%'
+            </if>
+        
+        </where>
+
+    </select>
+
+    <select id="getByCondition" resultType="com.atom.crm.workbench.domain.Clue">
+
+        select * from tbl_clue
+        <where>
+
+            <if test="fullname != null and fullname != ''">
+                fullname like '%' #{fullname} '%'
+            </if>
+
+            <if test="company != null and company != ''">
+                and company like '%' #{company} '%'
+            </if>
+
+            <if test="phone != null and phone != ''">
+                and phone like  '%' #{phone} '%'
+            </if>
+
+            <if test="owner != null and owner != ''">
+                and owner like '%' #{owner} '%'
+            </if>
+
+            <if test="mphone != null and mphone != ''">
+                and mphone like '%' #{mphone} '%'
+            </if>
+
+            <if test="source != null and source != ''">
+                and source like '%' #{source} '%'
+            </if>
+
+            <if test="state != null and state != ''">
+                and state like '%' #{state} '%'
+            </if>
+
+        </where>
+
+        order by createTime desc
+
+        limit #{skipCount}, #{pageSize}
+
+    </select>
   	
 </mapper>
 

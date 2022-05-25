@@ -362,7 +362,7 @@
 
 				$.each(response.dataList, function(i, v){
 
-					html += '<tr class="active">';
+						html += '<tr class="active">';
 					html += '<td><input type="checkbox" name="xz" value="'+v.id+'"/></td>';
 					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+v.id+'\';">'+v.name+'</a></td>';
 					html += '<td>'+v.owner+'</td>';
