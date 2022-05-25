@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet({"/workbench/activity/getUserList.do", "/workbench/activity/save.do", "/workbench/activity/pageList.do", "/workbench/activity/delete.do",
+@WebServlet({"/workbench/activity/getUserList.do", "/workbench/activity/save.do", "/workbench/activity/pageList.do",
         "/workbench/activity/getUserListAndActivity.do", "/workbench/activity/update.do", "/workbench/activity/detail.do",
         "/workbench/activity/getRemarkListByAid.do", "/workbench/activity/deleteRemark.do", "/workbench/activity/saveRemark.do",
-        "/workbench/activity/updateRemark.do"})
+        "/workbench/activity/updateRemark.do","/workbench/activity/delete.do",})
 public class ActivityController extends HttpServlet {
 
     @Override

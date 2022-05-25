@@ -4,6 +4,51 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atom.crm.workbench.dao.ClueDao">
+
+    <insert id="save">
+
+        insert into tbl_clue(
+              id,
+              fullname,
+              appellation,
+              owner,
+              company,
+              job,
+              email,
+              phone,
+              website,
+              mphone,
+              state,
+              source,
+              createBy,
+              createTime,
+              description,
+              contactSummary,
+              nextContactTime,
+              address
+        )
+        values(
+              #{id},
+              #{fullname},
+              #{appellation},
+              #{owner},
+              #{company},
+              #{job},
+              #{email},
+              #{phone},
+              #{website},
+              #{mphone},
+              #{state},
+              #{source},
+              #{createBy},
+              #{createTime},
+              #{description},
+              #{contactSummary},
+              #{nextContactTime},
+              #{address}
+              )
+
+    </insert>
 	
 	<select id="getCountByCondition" resultType="int">
 

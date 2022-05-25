@@ -53,21 +53,21 @@
 
 					$.each(response, function(i, v){
 
-						html += "<option value='"+v.id+"'>"+v.name+"</option>";
+						html += "<option value="+ v.id +">"+ v.name +"</option>";
 
 					})
 
-					$("#create-clueOwner").html(html);
+					$("#create-owner").html(html);
 
 					var id = "${user.id}";
 
 					//给模态窗口的“所有者”附上默认值，默认值是当前登录用户。
-					$("#create-clueOwner").val(id);
+					$("#create-owner").val(id);
 
 				}
 
 			})
-
+			//打开模态窗口
 			$("#createClueModal").modal("show");
 		})
 
@@ -83,17 +83,17 @@
 			$.ajax({
 				url: "workbench/clue/save.do",
 				data: {
+					"owner": $.trim($("#create-owner > option:selected").text()),
 					"company": $.trim($("#create-company").val()),
-					"appellation": $.trim($("#create-appellation").val()),
-					"appellation": $.trim($("#create-appellation").val()),
+					"appellation": $.trim($("#create-appellation > option:selected").text()),
 					"fullname": $.trim($("#create-fullname").val()),
 					"job": $.trim($("#create-job").val()),
 					"email": $.trim($("#create-email").val()),
 					"phone": $.trim($("#create-phone").val()),
 					"website": $.trim($("#create-website").val()),
 					"mphone": $.trim($("#create-mphone").val()),
-					"state": $.trim($("#create-state").val()),
-					"source": $.trim($("#create-source").val()),
+					"state": $.trim($("#create-state > option:selected").text()),
+					"source": $.trim($("#create-source > option:selected").text()),
 					"description": $.trim($("#create-description").val()),
 					"contactSummary": $.trim($("#create-contactSummary").val()),
 					"nextContactTime": $.trim($("#create-nextContactTime").val()),
@@ -229,9 +229,9 @@
 					<form class="form-horizontal" role="form" id="clueAddForm">
 					
 						<div class="form-group">
-							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
+								<select class="form-control" id="create-owner">
 								  <%--<option>zhangsan</option>
 								  <option>lisi</option>
 								  <option>wangwu</option>--%>

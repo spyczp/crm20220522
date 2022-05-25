@@ -11,4 +11,6 @@ public interface ClueService {
     List<User> getUserList();
 
     PaginationVO<Clue> getByCondition(Map<String, Object> map);
+
+    boolean save(Clue clue);
 }

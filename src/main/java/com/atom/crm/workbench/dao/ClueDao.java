@@ -11,4 +11,6 @@ public interface ClueDao {
     int getCountByCondition(Map<String, Object> map);
 
     List<Clue> getByCondition(Map<String, Object> map);
+
+    int save(Clue clue);
 }

@@ -40,4 +40,18 @@ public class ClueServiceImpl implements ClueService {
 
         return paginationVO;
     }
+
+    @Override
+    public boolean save(Clue clue) {
+
+        boolean flag = true;
+
+        int count = clueDao.save(clue);
+
+        if(count != 1){
+            flag = false;
+        }
+
+        return flag;
+    }
 }
