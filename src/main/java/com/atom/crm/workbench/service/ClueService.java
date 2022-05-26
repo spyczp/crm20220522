@@ -2,6 +2,7 @@ package com.atom.crm.workbench.service;
 
 import com.atom.crm.settings.domain.User;
 import com.atom.crm.vo.PaginationVO;
+import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ClueService {
     PaginationVO<Clue> getByCondition(Map<String, Object> map);
 
     boolean save(Clue clue);
+
+    Clue getById(String id);
+
+    List<Activity> GetActivityListByClueId(String clueId);
 }

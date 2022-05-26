@@ -39,7 +39,7 @@
 				format: 'yyyy-mm-dd',
 				autoclose: true,
 				todayBtn: true,
-				pickerPosition: "bottom-left"
+				pickerPosition: "top-left"
 			});
 
 			$.ajax({

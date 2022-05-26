@@ -4,7 +4,9 @@ import com.atom.crm.settings.dao.UserDao;
 import com.atom.crm.settings.domain.User;
 import com.atom.crm.utils.SqlSessionUtil;
 import com.atom.crm.vo.PaginationVO;
+import com.atom.crm.workbench.dao.ClueActivityRelationDao;
 import com.atom.crm.workbench.dao.ClueDao;
+import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
 import com.atom.crm.workbench.service.ClueService;
 
@@ -16,6 +18,8 @@ public class ClueServiceImpl implements ClueService {
     private ClueDao clueDao = SqlSessionUtil.getSqlSession().getMapper(ClueDao.class);
 
     private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
+
+    private ClueActivityRelationDao clueActivityRelationDao = SqlSessionUtil.getSqlSession().getMapper(ClueActivityRelationDao.class);
 
 
     @Override
@@ -53,5 +57,21 @@ public class ClueServiceImpl implements ClueService {
         }
 
         return flag;
+    }
+
+    @Override
+    public Clue getById(String id) {
+
+        Clue clue = clueDao.getById(id);
+
+        return clue;
+    }
+
+    @Override
+    public List<Activity> GetActivityListByClueId(String clueId) {
+
+        List<Activity> activityList = clueActivityRelationDao.GetActivityListByClueId(clueId);
+
+        return activityList;
     }
 }

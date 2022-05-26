@@ -13,4 +13,6 @@ public interface ClueDao {
     List<Clue> getByCondition(Map<String, Object> map);
 
     int save(Clue clue);
+
+    Clue getById(String id);
 }

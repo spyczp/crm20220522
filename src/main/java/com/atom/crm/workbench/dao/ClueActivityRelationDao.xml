@@ -5,7 +5,33 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.ClueActivityRelationDao">
 	
-	
+	<select id="GetActivityListByClueId" resultType="com.atom.crm.workbench.domain.Activity">
+
+        select
+
+            ca.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate,
+            a.cost,
+            a.description,
+            a.createTime,
+            a.createBy,
+            a.editTime,
+            a.editBy
+
+        from tbl_clue_activity_relation as ca
+        join tbl_clue as c
+        on ca.clueId = c.id
+        join tbl_activity as a
+        on ca.activityId = a.id
+        join tbl_user as u
+        on a.owner = u.id
+        where ca.clueId = #{clueId}
+        order by a.createTime desc
+
+    </select>
   	
 </mapper>
 

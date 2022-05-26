@@ -6,6 +6,7 @@ import com.atom.crm.utils.PrintJson;
 import com.atom.crm.utils.ServiceFactory;
 import com.atom.crm.utils.UUIDUtil;
 import com.atom.crm.vo.PaginationVO;
+import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
 import com.atom.crm.workbench.service.ClueService;
 import com.atom.crm.workbench.service.impl.ClueServiceImpl;
@@ -21,7 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do"})
+@WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
+        "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -38,7 +40,47 @@ public class ClueController extends HttpServlet {
             doPageList(request, response);
         }else if("/workbench/clue/save.do".equals(servletPath)){
             doSave(request, response);
-        }
+        }else if("/workbench/clue/detail.do".equals(servletPath)){
+            doDetail(request, response);
+        }else if("/workbench/clue/getActivityListByClueId.do".equals(servletPath))
+            doGetActivityListByClueId(request, response);
+    }
+
+    private void doGetActivityListByClueId(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        /*
+        * 1.拿到浏览器提交的数据：clueId
+        * 2.到数据库查询市场活动信息列表
+        * 3.给浏览器返回数据：[{activity1},{activity2},{activity3},...]
+        * */
+        String clueId = request.getParameter("clueId");
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        List<Activity> activityList = cs.GetActivityListByClueId(clueId);
+
+        PrintJson.printJsonObj(response, activityList);
+    }
+
+    private void doDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        System.out.println("查询线索的详细信息");
+        /*
+        * 1.拿到浏览器提交的数据：id
+        * 2.根据id在数据库拿到线索的详细信息
+        * 3.用请求转发，把线索数据保存到请求域中。
+        * 4.浏览器通过el表达式展示数据。
+        * */
+
+        String id = request.getParameter("id");
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        Clue clue = cs.getById(id);
+
+        request.setAttribute("clue", clue);
+
+        request.getRequestDispatcher("/workbench/clue/detail.jsp").forward(request, response);
     }
 
     private void doSave(HttpServletRequest request, HttpServletResponse response)
