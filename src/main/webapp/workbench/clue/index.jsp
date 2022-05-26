@@ -83,7 +83,7 @@
 			$.ajax({
 				url: "workbench/clue/save.do",
 				data: {
-					"owner": $.trim($("#create-owner > option:selected").text()),
+					"owner": $.trim($("#create-owner > option:selected").val()),
 					"company": $.trim($("#create-company").val()),
 					"appellation": $.trim($("#create-appellation > option:selected").text()),
 					"fullname": $.trim($("#create-fullname").val()),
@@ -229,7 +229,7 @@
 					<form class="form-horizontal" role="form" id="clueAddForm">
 					
 						<div class="form-group">
-							<label for="create-owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-owner" class="col-sm-2 control-label">所有者123<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-owner">
 								  <%--<option>zhangsan</option>
