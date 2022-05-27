@@ -18,4 +18,6 @@ public interface ClueService {
     Clue getById(String id);
 
     List<Activity> GetActivityListByClueId(String clueId);
+
+    boolean unbound(String id);
 }

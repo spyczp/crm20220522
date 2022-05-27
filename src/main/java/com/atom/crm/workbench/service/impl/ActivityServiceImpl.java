@@ -172,4 +172,12 @@ public class ActivityServiceImpl implements ActivityService {
 
         return flag;
     }
+
+    @Override
+    public List<Activity> getActivityListByClueId02(String clueId) {
+
+        List<Activity> activityList = activityDao.getActivityListByClueId02(clueId);
+
+        return activityList;
+    }
 }

@@ -74,4 +74,18 @@ public class ClueServiceImpl implements ClueService {
 
         return activityList;
     }
+
+    @Override
+    public boolean unbound(String id) {
+
+        boolean flag = true;
+
+        int count = clueActivityRelationDao.deleteById(id);
+
+        if(count != 1){
+            flag = false;
+        }
+
+        return flag;
+    }
 }

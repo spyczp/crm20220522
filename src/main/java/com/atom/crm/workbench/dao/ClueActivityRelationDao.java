@@ -9,4 +9,6 @@ public interface ClueActivityRelationDao {
 
 
     List<Activity> GetActivityListByClueId(String clueId);
+
+    int deleteById(String id);
 }

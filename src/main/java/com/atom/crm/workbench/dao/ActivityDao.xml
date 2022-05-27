@@ -131,6 +131,25 @@
 
     </select>
 
+    <select id="getActivityListByClueId02" resultType="com.atom.crm.workbench.domain.Activity">
+
+        select
+            ca.id as id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner = u.id
+        join tbl_clue_activity_relation as ca
+        on a.id = ca.activityId
+
+        where ca.clueId = #{clueId}
+
+    </select>
+
 </mapper>
 
 

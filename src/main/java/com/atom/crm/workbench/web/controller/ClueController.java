@@ -8,7 +8,9 @@ import com.atom.crm.utils.UUIDUtil;
 import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
+import com.atom.crm.workbench.service.ActivityService;
 import com.atom.crm.workbench.service.ClueService;
+import com.atom.crm.workbench.service.impl.ActivityServiceImpl;
 import com.atom.crm.workbench.service.impl.ClueServiceImpl;
 
 import javax.servlet.ServletException;
@@ -23,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
-        "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do"})
+        "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do", "/workbench/clue/unbound.do",
+        "/workbench/clue/getActivityListByClueId02.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -42,8 +45,42 @@ public class ClueController extends HttpServlet {
             doSave(request, response);
         }else if("/workbench/clue/detail.do".equals(servletPath)){
             doDetail(request, response);
-        }else if("/workbench/clue/getActivityListByClueId.do".equals(servletPath))
+        }else if("/workbench/clue/getActivityListByClueId.do".equals(servletPath)) {
             doGetActivityListByClueId(request, response);
+        }else if("/workbench/clue/unbound.do".equals(servletPath)){
+            doUnbound(request, response);
+        }else if("/workbench/clue/getActivityListByClueId02.do".equals(servletPath)){
+            doGetActivityListByClueId02(request, response);
+        }
+    }
+
+    private void doGetActivityListByClueId02(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+
+        String clueId = request.getParameter("clueId");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        List<Activity> activityList = as.getActivityListByClueId02(clueId);
+
+        PrintJson.printJsonObj(response, activityList);
+    }
+
+    private void doUnbound(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        System.out.println("解除线索和市场活动的关联关系");
+        /*
+        * 1.拿到浏览器提交的数据：关联关系id
+        * 2.到关联关系表中删除数据
+        * 3.给浏览器返回：{"success": true/false}
+        * */
+        String id = request.getParameter("id");
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        boolean flag = cs.unbound(id);
+
+        PrintJson.printJsonFlag(response, flag);
     }
 
     private void doGetActivityListByClueId(HttpServletRequest request, HttpServletResponse response)

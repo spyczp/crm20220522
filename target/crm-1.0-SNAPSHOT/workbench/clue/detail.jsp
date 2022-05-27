@@ -59,7 +59,7 @@
 		* 2.展示数据
 		* */
 		$.ajax({
-			url: "workbench/clue/getActivityListByClueId.do",
+			url: "workbench/clue/getActivityListByClueId02.do",
 			data:{
 				"clueId": "${clue.id}"
 			},
@@ -72,12 +72,12 @@
 
 				$.each(response, function(i, v){
 
-					html += '<tr>';
+					html += '<tr id="'+v.id+'">';
 					html += '<td>'+v.name+'</td>';
 					html += '<td>'+v.startDate+'</td>';
 					html += '<td>'+v.endDate+'</td>';
 					html += '<td>'+v.owner+'</td>';
-					html += '<td><a href="javascript:void(0);" onclick="unbound('+v.id+')" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
+					html += '<td><a href="javascript:void(0);" onclick="unbound(\''+v.id+'\')" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
 					html += '</tr>';
 
 				})
@@ -92,6 +92,29 @@
 	//20220526写到这里
 	function unbound(id) {
 
+		$.ajax({
+			url: "workbench/clue/unbound.do",
+			data:{
+				"id": id
+			},
+			type: "get",
+			dataType: "json",
+			success: function (response) {
+				/*response: {"success": true/false}*/
+
+				if(response.success){
+					//若在数据库解绑成功（删除关联关系），则删除页面上对应的市场活动标签。
+					//$("#"+id).remove();
+
+					//或者刷新市场活动列表
+					showActivityList();
+
+				}else {
+					alert("解绑失败");
+				}
+			}
+
+		})
 
 	}
 	
