@@ -51,6 +51,75 @@
 
 		//页面加载完毕之后，展示关联的市场活动信息列表
 		showActivityList();
+
+		//为关联市场活动的模态窗口中的搜索框绑定事件，通过触发回车键，查询并展现所需市场活动列表
+		$("#aname").keydown(function(event){
+			//如果是回车键
+			if(event.keyCode==13){
+				//点击回车，按条件到数据库查询市场活动列表，并展示出来
+				$.ajax({
+					url: "workbench/clue/getActivityListByNameAndNotByClueId.do",
+					data:{
+						"aname": $.trim($("#aname").val()),
+						"clueId": "${clue.id}"
+					},
+					type: "post",
+					dataType: "json",
+					success: function (response) {
+						/*response: [{市场活动1},{市场活动2},{市场活动3}...]*/
+
+						var html = "";
+
+						$.each(response, function(i, v){
+
+							html += '<tr>';
+							html += '<td><input type="checkbox" name="xz" value="'+v.id+'" "></td>';
+							html += '<td>'+v.name+'</td>';
+							html += '<td>'+v.startDate+'</td>';
+							html += '<td>'+v.endDate+'</td>';
+							html += '<td>'+v.owner+'</td>';
+							html += '</tr>';
+
+						});
+
+						$("#searchActivityList").html(html);
+
+					}
+
+				})
+
+				//终止 在模态窗口中按回车键时，触发的刷新页面事件。
+				return false;
+			}
+
+		})
+
+		//绑定市场活动
+		$("#boundBtn").click(function(){
+
+			var $xz = $("input[name=xz]:checked");
+
+			if($xz.length == 0){
+				alert("请至少选择一条市场活动绑定");
+			}else{
+				/*workbench/clue/bound.do?clueId=xxx&activityId=xxx&activityId=xxx&activityId=xxx*/
+				var param = "clueId=${clue.id}&";
+
+				for(var i=0; i<$xz.length; i++){
+
+					param += "activityId=" + $($xz[i]).val();
+
+					if(i < $xz.length-1){
+						param += "&";
+					}
+				}
+				alert(param);
+				//20220527写到这里
+			}
+
+		})
+
+
 	});
 
 	function showActivityList() {
@@ -137,7 +206,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" class="form-control" id="aname" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询12">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -153,10 +222,10 @@
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="searchActivityList">
+							<%--<tr>
 								<td><input type="checkbox"/></td>
-								<td>发传单</td>
+								<td>发传单123</td>
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
@@ -167,13 +236,13 @@
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr>--%>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="boundBtn">关联123</button>
 				</div>
 			</div>
 		</div>

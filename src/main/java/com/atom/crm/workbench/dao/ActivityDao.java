@@ -21,4 +21,6 @@ public interface ActivityDao {
     Activity getById2(String id);
 
     List<Activity> getActivityListByClueId02(String clueId);
+
+    List<Activity> GetActivityListByNameAndNotByClueId(Map<String, String> map);
 }

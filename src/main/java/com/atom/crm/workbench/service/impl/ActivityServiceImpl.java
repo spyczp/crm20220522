@@ -180,4 +180,12 @@ public class ActivityServiceImpl implements ActivityService {
 
         return activityList;
     }
+
+    @Override
+    public List<Activity> GetActivityListByNameAndNotByClueId(Map<String, String> map) {
+
+        List<Activity> activityList = activityDao.GetActivityListByNameAndNotByClueId(map);
+
+        return activityList;
+    }
 }

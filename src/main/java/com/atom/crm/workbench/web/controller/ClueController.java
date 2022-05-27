@@ -18,7 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 @WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
         "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do", "/workbench/clue/unbound.do",
-        "/workbench/clue/getActivityListByClueId02.do"})
+        "/workbench/clue/getActivityListByClueId02.do", "/workbench/clue/getActivityListByNameAndNotByClueId.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -51,7 +51,31 @@ public class ClueController extends HttpServlet {
             doUnbound(request, response);
         }else if("/workbench/clue/getActivityListByClueId02.do".equals(servletPath)){
             doGetActivityListByClueId02(request, response);
+        }else if("/workbench/clue/getActivityListByNameAndNotByClueId.do".equals(servletPath)){
+            doGetActivityListByNameAndNotByClueId(request, response);
         }
+    }
+
+    private void doGetActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("按名称条件查找市场活动，并过滤已关联的市场活动");
+        /*
+        * 1.拿到浏览器提交的数据：aname，clueId
+        * 2.到数据库查询市场活动信息
+        * 3.返回市场活动信息列表给浏览器（json）
+        * */
+
+        String aname = request.getParameter("aname");
+        String clueId = request.getParameter("clueId");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("aname", aname);
+        map.put("clueId", clueId);
+
+        List<Activity> activityList = as.GetActivityListByNameAndNotByClueId(map);
+
+        PrintJson.printJsonObj(response, activityList);
     }
 
     private void doGetActivityListByClueId02(HttpServletRequest request, HttpServletResponse response)
