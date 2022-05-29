@@ -38,6 +38,12 @@
         order by a.createTime desc
 
     </select>
+
+    <insert id="bound">
+
+        insert into tbl_clue_activity_relation values(#{id}, #{clueId}, #{activityId})
+
+    </insert>
   	
 </mapper>
 

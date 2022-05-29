@@ -8,6 +8,7 @@ import com.atom.crm.workbench.dao.ClueActivityRelationDao;
 import com.atom.crm.workbench.dao.ClueDao;
 import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
+import com.atom.crm.workbench.domain.ClueActivityRelation;
 import com.atom.crm.workbench.service.ClueService;
 
 import java.util.List;
@@ -83,6 +84,25 @@ public class ClueServiceImpl implements ClueService {
         int count = clueActivityRelationDao.deleteById(id);
 
         if(count != 1){
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public boolean bound(List<ClueActivityRelation> carList) {
+
+        boolean flag = true;
+        int count = 0;
+
+
+        for(ClueActivityRelation car: carList){
+            clueActivityRelationDao.bound(car);
+            count++;
+        }
+
+        if(count != carList.size()){
             flag = false;
         }
 

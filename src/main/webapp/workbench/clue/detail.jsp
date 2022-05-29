@@ -113,12 +113,46 @@
 						param += "&";
 					}
 				}
-				alert(param);
+				/*alert(param);*/
 				//20220527写到这里
+
+				$.ajax({
+					url: "workbench/clue/bound.do",
+					data: param,
+					type: "get",
+					dataType: "json",
+					success: function(response){
+						/*response: {success: true/false}*/
+						if(response.success){
+							//刷新市场活动列表
+							showActivityList();
+							//清楚搜索框中的信息
+							$("#aname").val("");
+							//清除之前搜索出来的市场活动列表
+							$("#searchActivityList").empty();
+							//关闭模态窗口
+							$("#bundModal").modal("hide");
+						}else{
+							alert("绑定失败");
+						}
+					}
+				})
 			}
 
 		})
 
+		/*复选框，当对$("#qx")打勾后，会对当前页的结果全部打勾*/
+		$("#qx").click(function(){
+
+			$("input[name=xz]").prop("checked", this.checked);
+
+		})
+
+
+		$("#searchActivityList").on("click", $("input[name=xz]"), function(){
+			//当xz复选框2个都选上的时候，总的xz复选框数量和打勾的xz复选框数量相等，这时返回true，则qx复选框会打勾
+			$("#qx").prop("checked", $("input[name=xz]").length == $("input[name=xz]:checked").length);
+		})
 
 	});
 
@@ -214,8 +248,8 @@
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
-								<td>名称</td>
+								<td><input type="checkbox" id="qx"/></td>
+								<td>名称123</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
 								<td>所有者</td>

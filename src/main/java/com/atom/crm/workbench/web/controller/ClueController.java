@@ -8,6 +8,7 @@ import com.atom.crm.utils.UUIDUtil;
 import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
+import com.atom.crm.workbench.domain.ClueActivityRelation;
 import com.atom.crm.workbench.service.ActivityService;
 import com.atom.crm.workbench.service.ClueService;
 import com.atom.crm.workbench.service.impl.ActivityServiceImpl;
@@ -20,13 +21,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
         "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do", "/workbench/clue/unbound.do",
-        "/workbench/clue/getActivityListByClueId02.do", "/workbench/clue/getActivityListByNameAndNotByClueId.do"})
+        "/workbench/clue/getActivityListByClueId02.do", "/workbench/clue/getActivityListByNameAndNotByClueId.do",
+        "/workbench/clue/bound.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -53,7 +56,38 @@ public class ClueController extends HttpServlet {
             doGetActivityListByClueId02(request, response);
         }else if("/workbench/clue/getActivityListByNameAndNotByClueId.do".equals(servletPath)){
             doGetActivityListByNameAndNotByClueId(request, response);
+        }else if("/workbench/clue/bound.do".equals(servletPath)){
+            doBound(request, response);
         }
+    }
+
+    private void doBound(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        /*
+        * 1.拿到浏览器提交的数据：clueId,activityId
+        * 2.新建关联关系表id
+        * 3.把数据保存到数据库
+        * 4.返回{success: true/fasle} 给浏览器
+        * */
+        System.out.println("绑定线索和市场活动");
+        String clueId = request.getParameter("clueId");
+        String[] activityIds = request.getParameterValues("activityId");
+
+        List<ClueActivityRelation> carList = new ArrayList<>();
+
+        for(String activityId: activityIds){
+            ClueActivityRelation car = new ClueActivityRelation();
+            car.setId(UUIDUtil.getUUID());
+            car.setClueId(clueId);
+            car.setActivityId(activityId);
+            carList.add(car);
+        }
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        boolean flag = cs.bound(carList);
+
+        PrintJson.printJsonFlag(response, flag);
     }
 
     private void doGetActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
