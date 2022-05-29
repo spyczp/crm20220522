@@ -94,13 +94,17 @@ public class ClueServiceImpl implements ClueService {
     public boolean bound(List<ClueActivityRelation> carList) {
 
         boolean flag = true;
-        int count = 0;
+        /*int count = 0;
+
+
 
 
         for(ClueActivityRelation car: carList){
             clueActivityRelationDao.bound(car);
             count++;
-        }
+        }*/
+        int count = clueActivityRelationDao.bound2(carList);
+
 
         if(count != carList.size()){
             flag = false;

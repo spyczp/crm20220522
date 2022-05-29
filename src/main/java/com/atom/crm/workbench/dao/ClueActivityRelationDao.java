@@ -13,4 +13,6 @@ public interface ClueActivityRelationDao {
     int deleteById(String id);
 
     int bound(ClueActivityRelation car);
+
+    int bound2(List<ClueActivityRelation> carList);
 }

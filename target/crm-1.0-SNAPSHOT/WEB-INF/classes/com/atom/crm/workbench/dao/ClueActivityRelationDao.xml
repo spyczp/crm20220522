@@ -38,6 +38,24 @@
         order by a.createTime desc
 
     </select>
+
+    <insert id="bound">
+
+        insert into tbl_clue_activity_relation values(#{id}, #{clueId}, #{activityId})
+
+    </insert>
+
+    <insert id="bound2">
+
+        insert into tbl_clue_activity_relation
+        values
+        <foreach collection="list" item="car" separator=",">
+
+            (#{car.id}, #{car.clueId}, #{car.activityId})
+
+        </foreach>
+
+    </insert>
   	
 </mapper>
 
