@@ -22,7 +22,7 @@ public class DicServiceImpl implements DicService {
         * 1.创建一个map
         * 2.从数据库中拿所有的dicType code
         * 3.根据code查询每个code下所有的dicvalue
-        * 4.把数据保存到map中。Map：{"dicCode1": dicValList2, "dicCode2": dicValList2, "dicCode3": dicValList3...}
+        * 4.把数据保存到map中。Map：{"appellation": dicValList1, "dicCode2": dicValList2, "dicCode3": dicValList3...}
         * */
         Map<String, List<DicValue>> map = new HashMap<>();
 

@@ -29,7 +29,7 @@ import java.util.Map;
 @WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
         "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do", "/workbench/clue/unbound.do",
         "/workbench/clue/getActivityListByClueId02.do", "/workbench/clue/getActivityListByNameAndNotByClueId.do",
-        "/workbench/clue/bound.do"})
+        "/workbench/clue/bound.do", "/workbench/clue/getActivityListByName.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -58,7 +58,27 @@ public class ClueController extends HttpServlet {
             doGetActivityListByNameAndNotByClueId(request, response);
         }else if("/workbench/clue/bound.do".equals(servletPath)){
             doBound(request, response);
+        }else if("/workbench/clue/getActivityListByName.do".equals(servletPath)){
+            doGetActivityListByName(request, response);
         }
+    }
+
+    private void doGetActivityListByName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        /*
+        * 1.获取浏览器提交的数据：name
+        * 2.根据name到数据库查找市场活动
+        * 3.把市场活动列表返回给浏览器 [{activity1},{activity2},{activity3}...]
+        * */
+        System.out.println("根据名称模糊查询市场活动列表");
+
+        String name = request.getParameter("name");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        List<Activity> activityList = as.getActivityListByName(name);
+
+        PrintJson.printJsonObj(response, activityList);
     }
 
     private void doBound(HttpServletRequest request, HttpServletResponse response)

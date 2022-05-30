@@ -39,7 +39,7 @@ public class SysInitListener implements ServletContextListener {
         System.out.println("服务器开始加载数据字典");
 
         for(String dicCode: dicCodeList){
-
+            //dicCode:appellation(例子)
             application.setAttribute(dicCode, map.get(dicCode));
 
         }
