@@ -5,6 +5,12 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.ClueDao">
 
+    <delete id="deleteById">
+
+        delete from tbl_clue where id=#{clueId}
+
+    </delete>
+
     <select id="getById" resultType="com.atom.crm.workbench.domain.Clue">
 
         select

@@ -4,7 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atom.crm.workbench.dao.ClueRemarkDao">
-	
+
+    <select id="getByClueId" resultType="com.atom.crm.workbench.domain.ClueRemark">
+
+        select * from tbl_clue_remark where clueId=#{clueId}
+
+    </select>
+
+    <select id="getCountByClueId" resultType="int">
+
+        select count(*) from tbl_clue_remark where clueId=#{clueId}
+
+    </select>
+
+    <delete id="deleteByClueId">
+
+        delete from tbl_clue_remark where clueId=#{clueId}
+
+    </delete>
   	
 </mapper>
 

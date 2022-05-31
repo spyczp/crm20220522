@@ -1,4 +1,5 @@
 <%@page contentType="text/html; charset=utf-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +13,18 @@
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script type="text/javascript">
+
+	$(function () {
+
+
+
+
+	})
+
+
+</script>
 
 </head>
 <body>
@@ -128,10 +141,16 @@
 		<div class="form-group">
 			<label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionOwner">
-				  <option>zhangsan</option>
+				<select class="form-control" id="create-owner">
+				  <%--<option>zhangsan</option>
 				  <option>lisi</option>
-				  <option>wangwu</option>
+				  <option>wangwu</option>--%>
+					<c:forEach items="${userList}" var="u">
+
+						<option value="${u.id}" ${user.id eq u.id ? "selected": ""}>${u.name}</option>
+
+					</c:forEach>
+
 				</select>
 			</div>
 			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>

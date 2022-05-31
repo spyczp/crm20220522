@@ -5,7 +5,30 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.ContactsRemarkDao">
 	
-  	
+  	<insert id="save">
+
+        insert into tbl_contacts_remark(
+
+            id,
+            noteContent,
+            createBy,
+            createTime,
+            editFlag,
+            contactsId
+
+        )values(
+
+            #{id},
+            #{noteContent},
+            #{createBy},
+            #{createTime},
+            #{editFlag},
+            #{contactsId}
+
+                       )
+
+    </insert>
+
 </mapper>
 
 

@@ -7,9 +7,40 @@
 
     <select id="getByName" resultType="com.atom.crm.workbench.domain.Customer">
 
-        select * from tbl_customer where         
+        select * from tbl_customer where name=#{company}
 
     </select>
+
+    <insert id="save">
+
+        insert into tbl_customer(
+            id,
+            owner,
+            name,
+            website,
+            phone,
+            createBy,
+            createTime,
+            contactSummary,
+            nextContactTime,
+            description,
+            address
+
+        ) values(
+            #{id},
+            #{owner},
+            #{name},
+            #{website},
+            #{phone},
+            #{createBy},
+            #{createTime},
+            #{contactSummary},
+            #{nextContactTime},
+            #{description},
+            #{address}
+                 )
+
+    </insert>
   	
 </mapper>
 
