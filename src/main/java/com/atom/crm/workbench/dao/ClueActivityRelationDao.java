@@ -17,4 +17,8 @@ public interface ClueActivityRelationDao {
     int bound2(List<ClueActivityRelation> carList);
 
     List<ClueActivityRelation> getByClueId(String clueId);
+
+    int getCountByClueId(String clueId);
+
+    int deleteByClueId(String clueId);
 }

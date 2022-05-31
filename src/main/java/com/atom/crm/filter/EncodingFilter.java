@@ -11,6 +11,9 @@ public class EncodingFilter implements Filter {
             throws IOException, ServletException {
 
         //处理中文乱码问题
+
+        request.setCharacterEncoding("UTF-8");
+
         response.setCharacterEncoding("UTF-8");
 
         response.setContentType("application/json;charset=UTF-8");

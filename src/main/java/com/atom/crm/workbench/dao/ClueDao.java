@@ -15,4 +15,6 @@ public interface ClueDao {
     int save(Clue clue);
 
     Clue getById(String id);
+
+    int deleteById(String clueId);
 }

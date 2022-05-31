@@ -254,6 +254,55 @@ public class ClueServiceImpl implements ClueService {
             if(count5 != 1){
                 flag = false;
             }
+
+            //(7) 如果创建了交易，则创建一条该交易下的交易历史
+            TranHistory tranHistory = new TranHistory();
+            tranHistory.setId(UUIDUtil.getUUID());
+            tranHistory.setStage(t.getStage());
+            tranHistory.setMoney(t.getMoney());
+            tranHistory.setExpectedDate(t.getExpectedDate());
+            tranHistory.setCreateTime(createTime);
+            tranHistory.setCreateBy(createBy);
+            tranHistory.setTranId(t.getId());
+
+            int count6 = tranHistoryDao.save(tranHistory);
+            if(count6 != 1){
+                flag = false;
+            }
+        }
+
+        //(8) 删除线索备注
+        /*for(ClueRemark clueRemark: clueRemarkList){
+
+            int count7 = clueRemarkDao.delete(clueRemark);
+            if(count7 != 1){
+                flag = false;
+            }
+
+        }*/
+
+        int count7 = clueRemarkDao.getCountByClueId(clueId);
+
+        int count8 = clueRemarkDao.deleteByClueId(clueId);
+
+        if(count7 != 0 && count8 != count7){
+            flag = false;
+        }
+
+        //(9) 删除线索和市场活动的关系
+        int count9 = clueActivityRelationDao.getCountByClueId(clueId);
+
+        int count10 = clueActivityRelationDao.deleteByClueId(clueId);
+
+        if(count9 != 0 && count10 != count9){
+            flag = false;
+        }
+
+        //(10) 删除线索
+        int count11 = clueDao.deleteById(clueId);
+
+        if(count11 != 1){
+            flag = false;
         }
 
 
