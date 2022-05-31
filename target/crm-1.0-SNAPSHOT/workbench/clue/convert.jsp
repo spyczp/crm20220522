@@ -98,6 +98,22 @@
 			//关闭模态窗口
 			$("#searchActivityModal").modal("hide");
 		})
+
+        //点击转换按钮，则进入后台，去掉这条线索，分别新增一条客户和联系人
+        $("#convertBtn").click(function(){
+
+            //判断是否创建交易
+            if($("#isCreateTransaction").prop("checked")){
+
+                //为true则创建交易
+                //直接提交表单
+                $("#tranForm").submit();
+
+            }else{
+                window.location.href="workbench/clue/convert.do?clueId=${param.id}";
+            }
+
+        })
 	});
 </script>
 
@@ -175,22 +191,26 @@
 	</div>
 	<div id="create-transaction2" style="position: relative; left: 40px; top: 20px; width: 80%; background-color: #F7F7F7; display: none;" >
 	
-		<form>
+		<form id="tranForm" action="workbench/clue/convert.do" method="post">
+
+            <input type="hidden" name="flag" value="1" />
+            <input type="hidden" name="clueId" value="${param.id}" />
+
 		  <div class="form-group" style="width: 400px; position: relative; left: 20px;">
 		    <label for="amountOfMoney">金额</label>
-		    <input type="text" class="form-control" id="amountOfMoney">
+		    <input type="text" class="form-control" id="amountOfMoney" name="money">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="tradeName">交易名称</label>
-		    <input type="text" class="form-control" id="tradeName" value="动力节点-">
+		    <input type="text" class="form-control" id="tradeName" value="动力节点-" name="name">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="expectedClosingDate">预计成交日期</label>
-		    <input type="text" class="form-control time" id="expectedClosingDate">
+		    <input type="text" class="form-control time" id="expectedClosingDate" name="expectedDate">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="stage">阶段</label>
-		    <select id="stage"  class="form-control">
+		    <select id="stage"  class="form-control" name="stage">
 		    	<option></option>
 				<c:forEach items="${stage}" var="s">
 
@@ -211,7 +231,7 @@
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="activityName">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="openSearchModalBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
 		    <input type="text" class="form-control" id="activityName" placeholder="点击上面搜索" readonly>
-			  <input type="hidden" id="activityId"/>
+			  <input type="hidden" id="activityId" name="activityId"/>
 		  </div>
 		</form>
 		
@@ -222,7 +242,7 @@
 		<b>${param.owner}</b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
-		<input class="btn btn-primary" type="button" value="转换">
+		<input class="btn btn-primary" type="button" value="转换123" id="convertBtn">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="btn btn-default" type="button" value="取消">
 	</div>

@@ -5,6 +5,7 @@ import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
 import com.atom.crm.workbench.domain.ClueActivityRelation;
+import com.atom.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +24,6 @@ public interface ClueService {
     boolean unbound(String id);
 
     boolean bound(List<ClueActivityRelation> carList);
+
+    boolean convert(String clueId, Tran t, String createBy);
 }

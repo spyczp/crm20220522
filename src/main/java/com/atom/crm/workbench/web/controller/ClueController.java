@@ -9,6 +9,7 @@ import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Activity;
 import com.atom.crm.workbench.domain.Clue;
 import com.atom.crm.workbench.domain.ClueActivityRelation;
+import com.atom.crm.workbench.domain.Tran;
 import com.atom.crm.workbench.service.ActivityService;
 import com.atom.crm.workbench.service.ClueService;
 import com.atom.crm.workbench.service.impl.ActivityServiceImpl;
@@ -29,7 +30,7 @@ import java.util.Map;
 @WebServlet({"/workbench/clue/getUserList.do", "/workbench/clue/pageList.do", "/workbench/clue/save.do",
         "/workbench/clue/detail.do", "/workbench/clue/getActivityListByClueId.do", "/workbench/clue/unbound.do",
         "/workbench/clue/getActivityListByClueId02.do", "/workbench/clue/getActivityListByNameAndNotByClueId.do",
-        "/workbench/clue/bound.do", "/workbench/clue/getActivityListByName.do"})
+        "/workbench/clue/bound.do", "/workbench/clue/getActivityListByName.do", "/workbench/clue/convert.do"})
 public class ClueController extends HttpServlet {
 
     @Override
@@ -60,6 +61,53 @@ public class ClueController extends HttpServlet {
             doBound(request, response);
         }else if("/workbench/clue/getActivityListByName.do".equals(servletPath)){
             doGetActivityListByName(request, response);
+        }else if("/workbench/clue/convert.do".equals(servletPath)){
+            doConvert(request, response);
+        }
+    }
+
+    private void doConvert(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        /*
+        * 1.拿到浏览器提交的数据：clueId
+        * 2.根据提交的参数flag判断是否有创建交易的数据
+        * 3.把数据给到数据库，删除一条线索，新增一条客户和一条联系人
+        * 4.转换成功，浏览器跳转页面；转换失败，弹窗提示
+        * */
+        String clueId = request.getParameter("clueId");
+        String flag = request.getParameter("flag");
+        User user = (User) request.getSession(false).getAttribute("user");
+        String createBy = user.getName();
+
+        Tran t = null;
+
+        if("1".equals(flag)){
+
+            t = new Tran();
+
+            String money = request.getParameter("money");
+            String name = request.getParameter("name");
+            String expectedDate = request.getParameter("expectedDate");
+            String stage = request.getParameter("stage");
+            String activityId = request.getParameter("activityId");
+
+            t.setMoney(money);
+            t.setName(name);
+            t.setExpectedDate(expectedDate);
+            t.setStage(stage);
+            t.setActivityId(activityId);
+
+            t.setId(UUIDUtil.getUUID());
+            t.setCreateBy(createBy);
+            t.setCreateTime(DateTimeUtil.getSysTime());
+        }
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        boolean flag1 = cs.convert(clueId, t, createBy);
+
+        if (flag1){
+            response.sendRedirect(request.getContextPath() + "/workbench/clue/index.jsp");
         }
     }
 

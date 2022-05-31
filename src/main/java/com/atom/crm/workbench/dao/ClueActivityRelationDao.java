@@ -15,4 +15,6 @@ public interface ClueActivityRelationDao {
     int bound(ClueActivityRelation car);
 
     int bound2(List<ClueActivityRelation> carList);
+
+    List<ClueActivityRelation> getByClueId(String clueId);
 }

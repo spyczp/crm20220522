@@ -4,7 +4,43 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atom.crm.workbench.dao.CustomerDao">
-	
+
+    <select id="getByName" resultType="com.atom.crm.workbench.domain.Customer">
+
+        select * from tbl_customer where name=#{company}
+
+    </select>
+
+    <insert id="save">
+
+        insert into tbl_customer(
+            id,
+            owner,
+            name,
+            website,
+            phone,
+            createBy,
+            createTime,
+            contactSummary,
+            nextContactTime,
+            description,
+            address
+
+        ) values(
+            #{id},
+            #{owner},
+            #{name},
+            #{website},
+            #{phone},
+            #{createBy},
+            #{createTime},
+            #{contactSummary},
+            #{nextContactTime},
+            #{description},
+            #{address}
+                 )
+
+    </insert>
   	
 </mapper>
 
