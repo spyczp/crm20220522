@@ -3,10 +3,11 @@ package com.atom.crm.workbench.dao;
 import com.atom.crm.workbench.domain.Tran;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TranDao {
 
     int save(Tran t);
 
-    List<Tran> getTransactionList();
+    List<Tran> getTransactionList(Map<String, Object> map);
 }

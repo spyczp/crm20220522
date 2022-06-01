@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DicValueDao {
     List<DicValue> getByCode(String dicTypeCode);
+
+    String getValueById(String stage);
 }

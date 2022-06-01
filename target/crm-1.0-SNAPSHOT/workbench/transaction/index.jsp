@@ -1,4 +1,5 @@
 <%@page contentType="text/html; charset=utf-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +31,16 @@
 		* */
 		$.ajax({
 			url: "workbench/transaction/getTransactionList.do",
+			data:{
+				"pageNo": pageNo,
+				"pageSize": pageSize,
+				"owner": $.trim($("#search-owner").val()),
+				"customerName": $.trim($("#search-customerName").val()),
+				"stage": $.trim($("#search-stage").val()),
+				"transactionType": $.trim($("#search-transactionType").val()),
+				"source": $.trim($("#create-clueSource").val()),
+				"contactsName": $.trim($("#search-contactsName").val()),
+			},
 			type: "get",
 			dataType: "json",
 			success: function (response) {
@@ -37,7 +48,9 @@
 				* 其中，customerId的值需要在sql中替换为客户名称
 				* 其中，owner的值需要在sql中替换为名字
 				* 其中，contactsId的值需要在sql中替换为联系人名称
-				* 把stage、type、
+				*
+				* 20220601写到这里
+				* 把stage、type、source换成名称
 				* */
 
 				var html = "";
@@ -58,6 +71,8 @@
 				})
 
 				$("#tranListBody").html(html);
+
+
 			}
 		})
 
@@ -87,21 +102,21 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-owner">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-name">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">客户名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-customerName">
 				    </div>
 				  </div>
 				  
@@ -110,9 +125,14 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">阶段</div>
-					  <select class="form-control">
+					  <select class="form-control" id="search-stage">
 					  	<option></option>
-					  	<option>资质审查</option>
+						  <c:forEach items="${stage}" var="s">
+
+							  <option value="${s.id}">${s.value}</option>
+
+						  </c:forEach>
+					  	<%--<option>资质审查</option>
 					  	<option>需求分析</option>
 					  	<option>价值建议</option>
 					  	<option>确定决策者</option>
@@ -120,7 +140,7 @@
 					  	<option>谈判/复审</option>
 					  	<option>成交</option>
 					  	<option>丢失的线索</option>
-					  	<option>因竞争丢失关闭</option>
+					  	<option>因竞争丢失关闭</option>--%>
 					  </select>
 				    </div>
 				  </div>
@@ -128,10 +148,15 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">类型</div>
-					  <select class="form-control">
+					  <select class="form-control" id="search-transactionType">
 					  	<option></option>
-					  	<option>已有业务</option>
-					  	<option>新业务</option>
+						  <c:forEach items="${transactionType}" var="tt">
+
+							  <option value="${tt.id}">${tt.value}</option>
+
+						  </c:forEach>
+					  	<%--<option>已有业务</option>
+					  	<option>新业务</option>--%>
 					  </select>
 				    </div>
 				  </div>
@@ -141,7 +166,12 @@
 				      <div class="input-group-addon">来源</div>
 				      <select class="form-control" id="create-clueSource">
 						  <option></option>
-						  <option>广告</option>
+						  <c:forEach items="${source}" var="src">
+
+							  <option value="${src.id}">${src.value}</option>
+
+						  </c:forEach>
+						  <%--<option>广告</option>
 						  <option>推销电话</option>
 						  <option>员工介绍</option>
 						  <option>外部介绍</option>
@@ -154,7 +184,7 @@
 						  <option>交易会</option>
 						  <option>web下载</option>
 						  <option>web调研</option>
-						  <option>聊天</option>
+						  <option>聊天</option>--%>
 						</select>
 				    </div>
 				  </div>
@@ -162,11 +192,11 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">联系人名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-contactsName">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="submit" class="btn btn-default" id="searchBtn">查询</button>
 				  
 				</form>
 			</div>

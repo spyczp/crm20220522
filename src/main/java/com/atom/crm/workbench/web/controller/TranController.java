@@ -20,7 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Provider;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet({"/workbench/transaction/getUserList.do", "/workbench/transaction/getCustomerName.do", "/workbench/transaction/save.do",
             "/workbench/transaction/getTransactionList.do"})
@@ -47,11 +49,43 @@ public class TranController extends HttpServlet {
     private void doGetTransactionList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("获取所有交易数据");
+        System.out.println("根据查询条件获取交易数据");
+
+        /*
+        * 1.获取浏览器提交的数据
+        * 2.调业务层方法，把数据传递给业务层
+        * 3.使用数据到数据库查询交易数据
+        * 4.返回交易数据给浏览器
+        *
+        * */
+        String pageNoStr = request.getParameter("pageNo");
+        String pageSizeStr = request.getParameter("pageSize");
+        String owner = request.getParameter("owner");
+        String customerName = request.getParameter("customerName");
+        String stage = request.getParameter("stage");
+        String transactionType = request.getParameter("transactionType");
+        String source = request.getParameter("source");
+        String contactsName = request.getParameter("contactsName");
+
+        Integer pageNo = Integer.valueOf(pageNoStr);
+        Integer pageSize = Integer.valueOf(pageSizeStr);
+
+        int skipCount = (pageNo - 1) * pageSize;
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("skipCount", skipCount);
+        map.put("pageSize", pageSize);
+        map.put("owner", owner);
+        map.put("stage", stage);
+        map.put("type", transactionType);
+        map.put("source", source);
+        map.put("customerName", customerName);
+        map.put("contactsName", contactsName);
 
         TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
 
-        List<Tran> tranList = ts.getTransactionList();
+        List<Tran> tranList = ts.getTransactionList(map);
 
         //[{交易1},{交易2},{交易3},...]
         PrintJson.printJsonObj(response, tranList);

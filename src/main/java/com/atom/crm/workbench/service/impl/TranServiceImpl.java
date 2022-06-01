@@ -1,7 +1,9 @@
 package com.atom.crm.workbench.service.impl;
 
+import com.atom.crm.settings.dao.DicValueDao;
 import com.atom.crm.utils.SqlSessionUtil;
 import com.atom.crm.utils.UUIDUtil;
+import com.atom.crm.workbench.dao.ContactsDao;
 import com.atom.crm.workbench.dao.CustomerDao;
 import com.atom.crm.workbench.dao.TranDao;
 import com.atom.crm.workbench.dao.TranHistoryDao;
@@ -11,6 +13,7 @@ import com.atom.crm.workbench.domain.TranHistory;
 import com.atom.crm.workbench.service.TranService;
 
 import java.util.List;
+import java.util.Map;
 
 public class TranServiceImpl implements TranService {
 
@@ -19,6 +22,10 @@ public class TranServiceImpl implements TranService {
     private TranHistoryDao tranHistoryDao = SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
 
     private CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
+
+    private ContactsDao contactsDao = SqlSessionUtil.getSqlSession().getMapper(ContactsDao.class);
+
+    private DicValueDao dicValueDao = SqlSessionUtil.getSqlSession().getMapper(DicValueDao.class);
 
 
     @Override
@@ -77,9 +84,33 @@ public class TranServiceImpl implements TranService {
     }
 
     @Override
-    public List<Tran> getTransactionList() {
+    public List<Tran> getTransactionList(Map<String, Object> map) {
+        /*
+        * 因为在浏览器页面，客户名称和联系人名称在tran表中不存在，表中只有对应的id。
+        * 所以，我们得从对应的表中找数据。若客户名称和联系人名称其中一个信息在对应表中
+        * 找不到，则应该返回空给浏览器。
+        *
+        * 把tran表和customer表以及contacts表连接起来查询就可以了
+        *
+        * 20220601 22:48 写到这里，明天再写。
+        * */
 
-        List<Tran> tranList = tranDao.getTransactionList();
+        List<Tran> tranList = tranDao.getTransactionList(map);
+
+        //在创建交易的时候，获取的stage，type，source是id
+        //把交易数据返回给浏览器时，我们需要把stage，type和source转换成文字
+        //所以，得访问dic_value数据表，获取stage，type和source对应的value
+        for(Tran t: tranList){
+
+            String stage = dicValueDao.getValueById(t.getStage());
+            String type = dicValueDao.getValueById(t.getType());
+            String source = dicValueDao.getValueById(t.getSource());
+
+            t.setStage(stage);
+            t.setType(type);
+            t.setSource(source);
+
+        }
 
         return tranList;
     }

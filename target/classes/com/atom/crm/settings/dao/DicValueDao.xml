@@ -11,6 +11,12 @@
 
     </select>
 
+    <select id="getValueById" resultType="java.lang.String">
+
+        select value from tbl_dic_value where id=#{id}
+
+    </select>
+
 </mapper>
 
 
