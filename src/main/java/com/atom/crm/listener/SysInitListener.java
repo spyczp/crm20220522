@@ -9,9 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @WebListener
 public class SysInitListener implements ServletContextListener {
@@ -45,5 +43,25 @@ public class SysInitListener implements ServletContextListener {
         }
 
         System.out.println("数据字典加载完毕");
+
+        System.out.println("服务器开始加载阶段-可能性数据");
+
+        Map<String, String> pMap = new HashMap<>();
+
+        ResourceBundle rb = ResourceBundle.getBundle("Stage2Possibility");
+
+        Enumeration<String> stageKeys = rb.getKeys();
+
+        while (stageKeys.hasMoreElements()) {
+
+            String stage = stageKeys.nextElement();
+            String possibility = rb.getString(stage);
+
+            pMap.put(stage, possibility);
+        }
+
+        application.setAttribute("pMap", pMap);
+
+        System.out.println("阶段-可能性数据加载完毕");
     }
 }
