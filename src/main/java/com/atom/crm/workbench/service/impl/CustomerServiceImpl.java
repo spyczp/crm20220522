@@ -1,11 +1,12 @@
-package com.atom.crm.workbench.service;
+package com.atom.crm.workbench.service.impl;
 
 import com.atom.crm.utils.SqlSessionUtil;
 import com.atom.crm.workbench.dao.CustomerDao;
+import com.atom.crm.workbench.service.CustomerService;
 
 import java.util.List;
 
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
     private CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
 

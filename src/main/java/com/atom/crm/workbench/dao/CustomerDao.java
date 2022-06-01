@@ -6,9 +6,10 @@ import java.util.List;
 
 public interface CustomerDao {
 
-    Customer getByName(String company);
+    Customer getByName(String customerName);
 
     int save(Customer customer);
 
     List<String> getCustomerNameByName(String name);
+
 }

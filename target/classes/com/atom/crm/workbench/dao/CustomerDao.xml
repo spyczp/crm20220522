@@ -7,7 +7,7 @@
 
     <select id="getByName" resultType="com.atom.crm.workbench.domain.Customer">
 
-        select * from tbl_customer where name=#{company}
+        select * from tbl_customer where name=#{customerName}
 
     </select>
 

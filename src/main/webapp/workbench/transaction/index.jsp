@@ -17,9 +17,53 @@
 
 	$(function(){
 		
-		
+		pageList(1, 2);
 		
 	});
+
+	//展示交易列表
+	function pageList(pageNo, pageSize){
+		/*
+		* 1.到数据库拿数据：所有交易信息列表
+		* 2.拼接字符串，铺html标签
+		* 3.插入分页组件
+		* */
+		$.ajax({
+			url: "workbench/transaction/getTransactionList.do",
+			type: "get",
+			dataType: "json",
+			success: function (response) {
+				/*response:[{交易1},{交易2},{交易3},...]
+				* 其中，customerId的值需要在sql中替换为客户名称
+				* 其中，owner的值需要在sql中替换为名字
+				* 其中，contactsId的值需要在sql中替换为联系人名称
+				*
+				* 20220601写到这里
+				* 把stage、type、source换成名称
+				* */
+
+				var html = "";
+
+				$.each(response, function(i, v){
+
+					html += '<tr>';
+					html += '<td><input type="checkbox" id="'+v.id+'"/></td>';
+					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.jsp\';">'+v.name+'</a></td>';
+					html += '<td>'+v.customerId+'</td>';
+					html += '<td>'+v.stage+'</td>';
+					html += '<td>'+v.type+'</td>';
+					html += '<td>'+v.owner+'</td>';
+					html += '<td>'+v.source+'</td>';
+					html += '<td>'+v.contactsId+'</td>';
+					html += '</tr>';
+
+				})
+
+				$("#tranListBody").html(html);
+			}
+		})
+
+	}
 	
 </script>
 </head>
@@ -151,8 +195,8 @@
 							<td>联系人名称</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="tranListBody">
+						<%--<tr>
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/transaction/detail.jsp';">动力节点-交易01</a></td>
 							<td>动力节点</td>
@@ -171,7 +215,7 @@
                             <td>zhangsan</td>
                             <td>广告</td>
                             <td>李四</td>
-                        </tr>
+                        </tr>--%>
 					</tbody>
 				</table>
 			</div>
