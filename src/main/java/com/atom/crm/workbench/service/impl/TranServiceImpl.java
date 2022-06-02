@@ -3,6 +3,7 @@ package com.atom.crm.workbench.service.impl;
 import com.atom.crm.settings.dao.DicValueDao;
 import com.atom.crm.utils.SqlSessionUtil;
 import com.atom.crm.utils.UUIDUtil;
+import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.dao.ContactsDao;
 import com.atom.crm.workbench.dao.CustomerDao;
 import com.atom.crm.workbench.dao.TranDao;
@@ -84,7 +85,7 @@ public class TranServiceImpl implements TranService {
     }
 
     @Override
-    public List<Tran> getTransactionList(Map<String, Object> map) {
+    public PaginationVO<Tran> getTransactionList(Map<String, Object> map) {
         /*
         * 因为在浏览器页面，客户名称和联系人名称在tran表中不存在，表中只有对应的id。
         * 所以，我们得从对应的表中找数据。若客户名称和联系人名称其中一个信息在对应表中
@@ -94,6 +95,8 @@ public class TranServiceImpl implements TranService {
         *
         * 20220601 22:48 写到这里，明天再写。
         * */
+
+        int count = tranDao.getCountByCondition(map);
 
         List<Tran> tranList = tranDao.getTransactionList(map);
 
@@ -112,6 +115,10 @@ public class TranServiceImpl implements TranService {
 
         }
 
-        return tranList;
+        PaginationVO<Tran> paginationVO = new PaginationVO<>();
+        paginationVO.setTotal(count);
+        paginationVO.setDataList(tranList);
+
+        return paginationVO;
     }
 }

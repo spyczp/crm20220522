@@ -5,16 +5,61 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.TranDao">
 
+    <select id="getCountByCondition" resultType="int">
+
+        select count(*)
+
+        from tbl_tran t
+        join tbl_customer cus
+        on t.customerId=cus.id
+        join tbl_user u
+        on t.owner=u.id
+        join tbl_contacts con
+        on t.contactsId=con.id
+
+        <where>
+
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+
+            <if test="name!=null and name!=''">
+                and t.name like '%' #{name} '%'
+            </if>
+
+            <if test="customerName!=null and customerName!=''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+
+            <if test="contactsName!=null and contactsName!=''">
+                and con.fullname like '%' #{contactsName} '%'
+            </if>
+
+            <if test="stage!=null and stage!=''">
+                and t.stage=#{stage}
+            </if>
+
+            <if test="type!=null and type!=''">
+                and t.type=#{type}
+            </if>
+
+            <if test="source!=null and source!=''">
+                and t.source=#{source}
+            </if>
+
+        </where>
+
+    </select>
+
     <select id="getTransactionList" resultType="com.atom.crm.workbench.domain.Tran">
 
         select
-
             t.id,
             u.name as owner,
             t.money,
             t.name,
             t.expectedDate,
-            c.name as customerId,
+            cus.name as customerId,
             t.stage,
             t.type,
             t.source,
@@ -29,12 +74,47 @@
             t.nextContactTime
 
         from tbl_tran t
-        join tbl_customer c
-        on t.customerId=c.id
+        join tbl_customer cus
+        on t.customerId=cus.id
         join tbl_user u
         on t.owner=u.id
         join tbl_contacts con
         on t.contactsId=con.id
+
+        <where>
+        
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+            
+            <if test="name!=null and name!=''">
+                and t.name like '%' #{name} '%'
+            </if>
+            
+            <if test="customerName!=null and customerName!=''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+
+            <if test="contactsName!=null and contactsName!=''">
+                and con.fullname like '%' #{contactsName} '%'
+            </if>
+
+            <if test="stage!=null and stage!=''">
+                and t.stage=#{stage}
+            </if>
+
+            <if test="type!=null and type!=''">
+                and t.type=#{type}
+            </if>
+
+            <if test="source!=null and source!=''">
+                and t.source=#{source}
+            </if>
+
+        </where>
+
+        order by t.createTime desc
+        limit #{skipCount}, #{pageSize}
 
     </select>
 

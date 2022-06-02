@@ -14,16 +14,66 @@
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
+<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+
 <script type="text/javascript">
 
 	$(function(){
 		
 		pageList(1, 2);
+
+		//点击查询按钮，刷新交易列表
+		//把查询条件保存到隐藏标签中。目的是：当用户改变输入框中的查询条件，但没有点击查询按钮时，依然以之前的查询条件为查询参数。
+		$("#searchBtn").click(function(){
+
+			$("#hidden-owner").val($.trim($("#search-owner").val()));
+			$("#hidden-name").val($.trim($("#search-name").val()));
+			$("#hidden-customerName").val($.trim($("#search-customerName").val()));
+			$("#hidden-stage").val($.trim($("#search-stage").val()));
+			$("#hidden-transactionType").val($.trim($("#search-transactionType").val()));
+			$("#hidden-source").val($.trim($("#create-clueSource").val()));
+			$("#hidden-contactsName").val($.trim($("#search-contactsName").val()));
+
+			pageList(1, 2);
+
+			//当我输入查询条件，点击查询按钮后，正常调用了一次pageList。
+			//但是不知道为啥页面又刷了一次pageList，且是没有查询条件的结果。(猜测：页面重新加载了)
+			//临时处理，添加return false; 在执行完pageList后中断事件。
+			return false;
+		})
+
+
+		/*复选框，当对$("#qx")打勾后，会对当前页的结果全部打勾*/
+		$("#qx").click(function () {
+
+			$("input[name=xz]").prop("checked", this.checked);
+		})
+
+		$("#tranListBody").on("click", $("input[name=xz]"), function () {
+
+			//当xz复选框2个都选上的时候，总的xz复选框数量和打勾的xz复选框数量相等，这时返回true，则qx复选框会打勾
+			$("#qx").prop("checked", $("input[name=xz]").length == $("input[name=xz]:checked").length);
+		})
 		
 	});
 
 	//展示交易列表
 	function pageList(pageNo, pageSize){
+
+		/*把全选的复选框的✔去掉*/
+		$("#qx").prop("checked", false);
+
+		//每次调用pageList，都会把之前的查询条件作为参数赋值给查询框。
+		$("#search-owner").val($.trim($("#hidden-owner").val()));
+		$("#search-name").val($.trim($("#hidden-name").val()));
+		$("#search-customerName").val($.trim($("#hidden-customerName").val()));
+		$("#search-stage").val($.trim($("#hidden-stage").val()));
+		$("#search-transactionType").val($.trim($("#hidden-transactionType").val()));
+		$("#create-clueSource").val($.trim($("#hidden-source").val()));
+		$("#search-contactsName").val($.trim($("#hidden-contactsName").val()));
+
 		/*
 		* 1.到数据库拿数据：所有交易信息列表
 		* 2.拼接字符串，铺html标签
@@ -35,16 +85,17 @@
 				"pageNo": pageNo,
 				"pageSize": pageSize,
 				"owner": $.trim($("#search-owner").val()),
+				"name": $.trim($("#search-name").val()),
 				"customerName": $.trim($("#search-customerName").val()),
 				"stage": $.trim($("#search-stage").val()),
 				"transactionType": $.trim($("#search-transactionType").val()),
 				"source": $.trim($("#create-clueSource").val()),
 				"contactsName": $.trim($("#search-contactsName").val()),
 			},
-			type: "get",
+			type: "post",
 			dataType: "json",
 			success: function (response) {
-				/*response:[{交易1},{交易2},{交易3},...]
+				/*response:{total:总条数, dataList:[{交易1},{交易2},{交易3},...]}
 				* 其中，customerId的值需要在sql中替换为客户名称
 				* 其中，owner的值需要在sql中替换为名字
 				* 其中，contactsId的值需要在sql中替换为联系人名称
@@ -55,10 +106,10 @@
 
 				var html = "";
 
-				$.each(response, function(i, v){
+				$.each(response.dataList, function(i, v){
 
-					html += '<tr>';
-					html += '<td><input type="checkbox" id="'+v.id+'"/></td>';
+					html += '<tr class="active">';
+					html += '<td><input type="checkbox" name="xz" id="'+v.id+'"/></td>';
 					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.jsp\';">'+v.name+'</a></td>';
 					html += '<td>'+v.customerId+'</td>';
 					html += '<td>'+v.stage+'</td>';
@@ -72,7 +123,29 @@
 
 				$("#tranListBody").html(html);
 
+				//计算总页数
+				var totalPages = response.total % pageSize == 0 ? response.total / pageSize : parseInt(response.total / pageSize) + 1;
 
+				//加入分页组件
+				//数据处理完毕后，结合分页查询，对前端展现分页信息
+				$("#activityPage").bs_pagination({
+					currentPage: pageNo, // 页码，我们提供
+					rowsPerPage: pageSize, // 每页显示的记录条数，我们提供
+					maxRowsPerPage: 20, // 每页最多显示的记录条数
+					totalPages: totalPages, // 总页数
+					totalRows: response.total, // 总记录条数，我们提供
+
+					visiblePageLinks: 3, // 显示几个卡片
+
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					showRowsDefaultInfo: true,
+
+					onChangePage : function(event, data){
+						pageList(data.currentPage , data.rowsPerPage);
+					}
+				});
 			}
 		})
 
@@ -82,8 +155,15 @@
 </head>
 <body>
 
-	
-	
+	<%--当用户点击查询按钮后，把查询条件保存到隐藏标签中。--%>
+	<input type="hidden" id="hidden-owner"/>
+	<input type="hidden" id="hidden-name"/>
+	<input type="hidden" id="hidden-customerName"/>
+	<input type="hidden" id="hidden-stage"/>
+	<input type="hidden" id="hidden-transactionType"/>
+	<input type="hidden" id="hidden-source"/>
+	<input type="hidden" id="hidden-contactsName"/>
+
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
@@ -196,7 +276,7 @@
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default" id="searchBtn">查询</button>
+				  <button type="searchBtn" class="btn btn-default" id="searchBtn">查询</button>
 				  
 				</form>
 			</div>
@@ -213,7 +293,7 @@
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="qx"/></td>
 							<td>名称</td>
 							<td>客户名称</td>
 							<td>阶段</td>
@@ -249,38 +329,9 @@
 			</div>
 			
 			<div style="height: 50px; position: relative;top: 20px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
+
+				<div id="activityPage"></div>
+
 			</div>
 			
 		</div>

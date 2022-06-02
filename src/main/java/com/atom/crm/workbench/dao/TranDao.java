@@ -10,4 +10,6 @@ public interface TranDao {
     int save(Tran t);
 
     List<Tran> getTransactionList(Map<String, Object> map);
+
+    int getCountByCondition(Map<String, Object> map);
 }

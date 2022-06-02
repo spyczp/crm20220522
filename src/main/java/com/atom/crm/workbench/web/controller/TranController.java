@@ -7,6 +7,7 @@ import com.atom.crm.utils.DateTimeUtil;
 import com.atom.crm.utils.PrintJson;
 import com.atom.crm.utils.ServiceFactory;
 import com.atom.crm.utils.UUIDUtil;
+import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Tran;
 import com.atom.crm.workbench.service.CustomerService;
 import com.atom.crm.workbench.service.TranService;
@@ -61,6 +62,7 @@ public class TranController extends HttpServlet {
         String pageNoStr = request.getParameter("pageNo");
         String pageSizeStr = request.getParameter("pageSize");
         String owner = request.getParameter("owner");
+        String name = request.getParameter("name");
         String customerName = request.getParameter("customerName");
         String stage = request.getParameter("stage");
         String transactionType = request.getParameter("transactionType");
@@ -77,6 +79,7 @@ public class TranController extends HttpServlet {
         map.put("skipCount", skipCount);
         map.put("pageSize", pageSize);
         map.put("owner", owner);
+        map.put("name", name);
         map.put("stage", stage);
         map.put("type", transactionType);
         map.put("source", source);
@@ -85,10 +88,10 @@ public class TranController extends HttpServlet {
 
         TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
 
-        List<Tran> tranList = ts.getTransactionList(map);
+        PaginationVO<Tran> paginationVO = ts.getTransactionList(map);
 
-        //[{交易1},{交易2},{交易3},...]
-        PrintJson.printJsonObj(response, tranList);
+        //{total:总条数, dataList:[{交易1},{交易2},{交易3},...]}
+        PrintJson.printJsonObj(response, paginationVO);
     }
 
     private void doSave(HttpServletRequest request, HttpServletResponse response)
