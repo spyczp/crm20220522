@@ -12,4 +12,6 @@ public interface TranDao {
     List<Tran> getTransactionList(Map<String, Object> map);
 
     int getCountByCondition(Map<String, Object> map);
+
+    Tran getById(String id);
 }

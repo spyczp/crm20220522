@@ -121,4 +121,20 @@ public class TranServiceImpl implements TranService {
 
         return paginationVO;
     }
+
+    @Override
+    public Tran getById(String id) {
+
+        Tran tran = tranDao.getById(id);
+
+        String stage = dicValueDao.getValueById(tran.getStage());
+        String type = dicValueDao.getValueById(tran.getType());
+        String source = dicValueDao.getValueById(tran.getSource());
+
+        tran.setStage(stage);
+        tran.setType(type);
+        tran.setSource(source);
+
+        return tran;
+    }
 }

@@ -109,8 +109,8 @@
 				$.each(response.dataList, function(i, v){
 
 					html += '<tr class="active">';
-					html += '<td><input type="checkbox" name="xz" id="'+v.id+'"/></td>';
-					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.jsp\';">'+v.name+'</a></td>';
+					html += '<td><input type="checkbox" name="xz" value="'+v.id+'"/></td>';
+					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.do?id='+v.id+'\';">'+v.name+'</a></td>';
 					html += '<td>'+v.customerId+'</td>';
 					html += '<td>'+v.stage+'</td>';
 					html += '<td>'+v.type+'</td>';

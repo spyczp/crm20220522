@@ -10,4 +10,6 @@ public interface TranService {
     boolean save(Tran tran, String customerName);
 
     PaginationVO<Tran> getTransactionList(Map<String, Object> map);
+
+    Tran getById(String id);
 }

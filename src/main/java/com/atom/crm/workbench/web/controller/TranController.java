@@ -20,13 +20,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Provider;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @WebServlet({"/workbench/transaction/getUserList.do", "/workbench/transaction/getCustomerName.do", "/workbench/transaction/save.do",
-            "/workbench/transaction/getTransactionList.do"})
+            "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do"})
 public class TranController extends HttpServlet {
 
     @Override
@@ -44,7 +43,25 @@ public class TranController extends HttpServlet {
             doSave(request, response);
         }else if("/workbench/transaction/getTransactionList.do".equals(servletPath)){
             doGetTransactionList(request, response);
+        }else if("/workbench/transaction/detail.do".equals(servletPath)){
+            doDetail(request, response);
         }
+    }
+
+    private void doDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+
+        System.out.println("查询一条交易的详情");
+
+        String id = request.getParameter("id");
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        Tran tran = ts.getById(id);
+
+        request.setAttribute("tran", tran);
+
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request, response);
     }
 
     private void doGetTransactionList(HttpServletRequest request, HttpServletResponse response)
