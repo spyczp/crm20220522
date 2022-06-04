@@ -5,6 +5,26 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.TranHistoryDao">
 
+    <select id="getByTranId" resultType="com.atom.crm.workbench.domain.TranHistory">
+
+        select
+
+            th.id,
+            dv.value as stage,
+            th.money,
+            th.expectedDate,
+            th.createTime,
+            th.createBy,
+            th.tranId
+
+        from tbl_tran_history th
+        join tbl_dic_value dv
+        on th.stage=dv.id
+
+        where th.tranId=#{tranId}
+
+    </select>
+
     <insert id="save">
 
         insert into tbl_tran_history(

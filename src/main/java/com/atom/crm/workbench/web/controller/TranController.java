@@ -9,6 +9,7 @@ import com.atom.crm.utils.ServiceFactory;
 import com.atom.crm.utils.UUIDUtil;
 import com.atom.crm.vo.PaginationVO;
 import com.atom.crm.workbench.domain.Tran;
+import com.atom.crm.workbench.domain.TranHistory;
 import com.atom.crm.workbench.service.CustomerService;
 import com.atom.crm.workbench.service.TranService;
 import com.atom.crm.workbench.service.impl.CustomerServiceImpl;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet({"/workbench/transaction/getUserList.do", "/workbench/transaction/getCustomerName.do", "/workbench/transaction/save.do",
-            "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do"})
+            "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do", "/workbench/transaction/getTranHistory.do"})
 public class TranController extends HttpServlet {
 
     @Override
@@ -45,7 +46,23 @@ public class TranController extends HttpServlet {
             doGetTransactionList(request, response);
         }else if("/workbench/transaction/detail.do".equals(servletPath)){
             doDetail(request, response);
+        }else if("/workbench/transaction/getTranHistory.do".equals(servletPath)){
+            doGetTranHistory(request, response);
         }
+    }
+
+    private void doGetTranHistory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        System.out.println("获取一笔交易的所有交易历史");
+
+        String tranId = request.getParameter("tranId");
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        List<TranHistory> tranHistoryList = ts.getTranHistoryByTranId(tranId);
+
+        PrintJson.printJsonObj(response, tranHistoryList);
     }
 
     private void doDetail(HttpServletRequest request, HttpServletResponse response)

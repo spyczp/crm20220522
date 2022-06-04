@@ -57,6 +57,7 @@ public class SysInitListener implements ServletContextListener {
             String stage = stageKeys.nextElement();
             String possibility = rb.getString(stage);
 
+            //{"阶段1": 可能性1, "阶段2": 可能性2, "阶段3": 可能性3, "阶段4": 可能性4, "阶段5": 可能性5, ...}
             pMap.put(stage, possibility);
         }
 

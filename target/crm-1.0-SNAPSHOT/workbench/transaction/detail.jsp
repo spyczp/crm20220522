@@ -1,6 +1,36 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="com.atom.crm.settings.domain.DicValue" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.atom.crm.workbench.domain.Tran" %>
 <%@page contentType="text/html; charset=utf-8" language="java" %>
+
+<%
+
+	//拿到stage类型的所有dicValue
+	List<DicValue> stageDicValueList = (List<DicValue>) application.getAttribute("stage");
+
+	//拿到阶段-可能性关系字典
+	Map<String, String> pMap = (Map<String, String>) application.getAttribute("pMap");
+
+	//拿到pMap中的key集合
+	Set<String> dicTypeSet = pMap.keySet();
+
+	//*准备：前面正常阶段和后面丢失阶段的分界点下标
+	int point = 0;
+	for(int i=0; i<stageDicValueList.size(); i++){
+		DicValue stageDV = stageDicValueList.get(i);
+		String value = stageDV.getValue();
+		String possibility = pMap.get(value);
+
+		if("0".equals(possibility)){
+			point = i;
+			break;
+		}
+	}
+
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,7 +127,7 @@
 		var json = {
 
 			<%
-			Map<String, String> pMap = (Map<String, String>) application.getAttribute("pMap");
+
 			Set<String> keys = pMap.keySet();
 
 			for(String key: keys){
@@ -117,10 +147,42 @@
 
 		$("#possibility>b").text(json[stage]);
 
-
+		//展示交易“阶段历史”列表
+		showHistoryList(json);
 	});
-	
 
+	function showHistoryList(json){
+
+		$.ajax({
+			url: "workbench/transaction/getTranHistory.do",
+			data:{
+				"tranId": "${tran.id}"
+			},
+			type: "get",
+			dataType: "json",
+			success: function (response) {
+				/*response: [{交易历史1},{交易历史2},{交易历史3},...]*/
+
+				var html = "";
+
+				$.each(response, function(i, v){
+
+					html += '<tr id="'+v.id+'">';
+					html += '<td>'+v.stage+'</td>';
+					html += '<td>'+v.money+'</td>';
+					html += '<td>'+json[v.stage]+'</td>';
+					html += '<td>'+v.expectedDate+'</td>';
+					html += '<td>'+v.createTime+'</td>';
+					html += '<td>'+v.createBy+'</td>';
+					html += '</tr>';
+
+				});
+
+				$("#tranHistoryBody").html(html);
+			}
+		})
+
+	}
 	
 </script>
 
@@ -146,6 +208,32 @@
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+		<%
+
+			//准备当前阶段和可能性
+			Tran tran = (Tran) request.getAttribute("tran");
+			String currentStage = tran.getStage();
+			String currentPossibility = pMap.get(currentStage);
+
+			//判断当前阶段
+			//如果当前阶段的可能性为0，前7个一定是黑圈。后面2个一个是黑×，一个是红×
+			//以下代码的核心作用是为了动态铺下面的span标签
+			if("0".equals(currentPossibility)){
+				//遍历阶段-可能性
+				//阶段图标的定义：
+				// 	如果当前阶段可能性为0，则阶段图标为：7个黑圈，2个×：一个黑×，一个红×（红×代表当前阶段）
+				//	如果当前阶段可能性不为0，则阶段图标为：本阶段之前的阶段为“绿圈”，本阶段为“绿下标”，本阶段之后的可能性不为0的阶段为“黑圈”，可能性为0的阶段为黑×。
+
+				//遍历所有阶段-可能性
+				for(int i=0; i<stageDicValueList.size(); i++){
+					
+				}
+			}else{
+
+			}
+
+		%>
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
@@ -312,8 +400,8 @@
 							<td>创建人</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="tranHistoryBody">
+						<%--<tr>
 							<td>资质审查</td>
 							<td>5,000</td>
 							<td>10</td>
@@ -336,7 +424,7 @@
 							<td>2017-02-07</td>
 							<td>2017-02-09 10:10:10</td>
 							<td>zhangsan</td>
-						</tr>
+						</tr>--%>
 					</tbody>
 				</table>
 			</div>
