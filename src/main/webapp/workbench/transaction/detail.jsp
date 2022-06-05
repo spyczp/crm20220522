@@ -183,6 +183,16 @@
 		})
 
 	}
+
+	/**
+	 * 改变当前阶段
+	 * @param stage 这个图标对应的阶段
+	 * @param index 这个阶段的下标
+	 */
+	function changeStage(stage, index){
+
+
+	}
 	
 </script>
 
@@ -227,14 +237,105 @@
 
 				//遍历所有阶段-可能性
 				for(int i=0; i<stageDicValueList.size(); i++){
+					DicValue cycleStageDicValue = stageDicValueList.get(i);
+					String cycleStage = cycleStageDicValue.getValue();
+					String cyclePossibility = pMap.get(cycleStage);
 
+					//如果遍历到的下标大于等于分界点下标，
+					// 		且遍历到的阶段等于当前阶段，则遍历到的阶段为红叉；
+					// 		否则为黑叉。
+					/*if(i >= point){
+						if(cycleStage.equals(currentStage)){
+							*//*红叉----------------------*//*
+						}else{
+							*//*黑叉------------------------*//*
+						}
+						//i<point的情况，都是黑圈。
+					}else{
+						*//*黑圈-----------------------*//*
+					}*/
+					//方法2
+					if("0".equals(cyclePossibility)){
+						if(cycleStage.equals(currentStage)){
+							/*红叉-----------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #FF0000;"></span>
+		-----------
+		<%
+						}else{
+							/*黑叉-------------------------*/
+
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #000000;"></span>
+		-----------
+		<%
+						}
+					}else{
+						/*黑圈------------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #000000;"></span>
+		-----------
+		<%
+					}
 				}
+				//当前阶段可能性不为0时
 			}else{
+				//获取当前阶段的下标
+				int currentStageIndex = 0;
 
+				for(int i=0; i<stageDicValueList.size(); i++) {
+					DicValue cycleStageDicValue = stageDicValueList.get(i);
+					String cycleStage = cycleStageDicValue.getValue();
+
+					if(cycleStage.equals(currentStage)){
+						currentStageIndex = i;
+						break;
+					}
+				}
+
+				//	如果当前阶段可能性不为0，则阶段图标为：本阶段之前的阶段为“绿圈”，本阶段为“绿标”，本阶段之后的可能性不为0的阶段为“黑圈”，可能性为0的阶段为黑×。
+				for(int i=0; i<stageDicValueList.size(); i++) {
+					DicValue cycleStageDicValue = stageDicValueList.get(i);
+					String cycleStage = cycleStageDicValue.getValue();
+					String cyclePossibility = pMap.get(cycleStage);
+
+					if(i < currentStageIndex) {
+						/*绿圈------------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #90F790;"></span>
+		-----------
+		<%
+					}else if(i == currentStageIndex){
+						/*绿标-------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #90F790;"></span>
+		-----------
+		<%
+					}else if(i > currentStageIndex && i < point){
+						/*黑圈----------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #000000;"></span>
+		-----------
+		<%
+					}else if(i >= point){
+						/*黑叉-------------------------*/
+		%>
+
+			<span id="<%=i%>" onclick="changeStage('<%=cycleStage%>', '<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=cycleStageDicValue.getText()%>" style="color: #000000;"></span>
+		-----------
+		<%
+					}
+				}
 			}
 
 		%>
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		<%--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
 		-----------
@@ -251,7 +352,7 @@
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
 		-----------
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
+		-------------%>
 		<span class="closingDate">${tran.expectedDate}</span>
 	</div>
 	
