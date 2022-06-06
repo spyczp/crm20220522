@@ -224,12 +224,133 @@
 
 					//3.刷新所有阶段图标
 					//改变阶段成功后，将所有的阶段图标重新判断，重新赋予样式及颜色
+					//stage:当前阶段；index:当前阶段的索引
+					changeIcon(stage, index);
 
 				}else{
 					alert("阶段变更失败");
 				}
 			}
 		})
+
+	}
+
+	function changeIcon(stage, index){
+
+		//当前阶段
+		var currentStage = stage;
+
+		//当前阶段的可能性，从页面上的标签提取.
+		var currentPossibility = $("#possibility>b").html();
+
+		//当前阶段的索引下标
+		var currentIndex = index;
+
+		//分界点下标
+		//注意：
+		//	1.因为这里是java数据类型转为js类型，只能是8大基本数据类型和String类型。其它引用类型转不了。
+		//	2.< %= % > 必须套在引号中。
+		var point = "<%=point%>";
+
+		//stageDicValueList的长度
+		var stageListLength = "<%=stageDicValueList.size()%>";
+
+		/*alert("当前阶段: " + currentStage);
+		alert("当前阶段的可能性: " + currentPossibility);
+		alert("当前阶段的索引下标: " + currentIndex);
+		alert("分界点下标: " + point);
+		alert("长度: " + stageListLength);*/
+
+		//下面，又要开始画所有图标了。这次是采用js来写。
+		//如果当前阶段可能性为0，则阶段图标为：7个黑圈，2个×：一个黑×，一个红×（红×代表当前阶段）
+		if("0" == currentPossibility){
+
+			//point分界点之前都是黑圈
+			//注意：这里i的值实则对应了stageDicValueList中的各个阶段的索引下标。
+			for(var i=0; i<point; i++){
+
+				/*黑圈--------------------------*/
+				//移除掉原有的样式
+				$("#"+i).removeClass();
+				//添加新样式
+				$("#"+i).addClass("glyphicon glyphicon-record mystage");
+				//为新样式赋予颜色
+				$("#"+i).css("color", "#000000");
+
+			}
+
+			//point分界点之后都是叉：有红叉和黑叉
+			//注意：这里i的值实则对应了stageDicValueList中的各个阶段的索引下标。
+			for(var i=point; i<stageListLength; i++){
+				//如果遍历到的i等于当前阶段的索引下标，则是红叉
+				if(i == currentIndex){
+					/*红叉----------------------*/
+					//移除掉原有的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color", "#FF0000");
+
+				}else{
+					//否则是黑叉
+					/*黑叉------------------------*/
+					//移除掉原有的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color", "#000000");
+				}
+
+
+			}
+			//当前阶段可能性不为0时
+		}else{
+			//如果当前阶段可能性不为0，则阶段图标为：本阶段之前的阶段为“绿圈”，本阶段为“绿下标”，本阶段之后的可能性不为0的阶段为“黑圈”，可能性为0的阶段为黑×。
+			for(var i=0; i<point; i++){
+				//绿圈，绿标，黑圈
+				if(i == currentIndex){
+					/*绿标--------------------------*/
+					//移除掉原有的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-map-marker mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color", "#90F790");
+
+				}else if(i < currentIndex){
+					/*绿圈--------------------------*/
+					//移除掉原有的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-ok-circle mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color", "#90F790");
+
+				}else{
+					/*黑圈-----------------------------*/
+					//移除掉原有的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-record mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color", "#000000");
+
+				}
+			}
+
+			for(var i=point; i<stageListLength; i++){
+				/*黑叉-----------------------*/
+				//移除掉原有的样式
+				$("#"+i).removeClass();
+				//添加新样式
+				$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+				//为新样式赋予颜色
+				$("#"+i).css("color", "#000000");
+			}
+
+		}
 
 	}
 	
