@@ -23,6 +23,8 @@
 
         where th.tranId=#{tranId}
 
+        order by th.createTime desc
+
     </select>
 
     <insert id="save">

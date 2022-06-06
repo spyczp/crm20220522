@@ -5,6 +5,12 @@
 
 <mapper namespace="com.atom.crm.settings.dao.DicValueDao">
 
+    <select id="getIdByValue" resultType="java.lang.String">
+
+        select id from tbl_dic_value where value=#{stage}
+
+    </select>
+
     <select id="getByCode" resultType="com.atom.crm.settings.domain.DicValue">
 
         select * from tbl_dic_value where typeCode = #{dicTypeCode} order by orderNo

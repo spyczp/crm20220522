@@ -8,4 +8,6 @@ public interface DicValueDao {
     List<DicValue> getByCode(String dicTypeCode);
 
     String getValueById(String stage);
+
+    String getIdByValue(String stage);
 }

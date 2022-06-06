@@ -14,4 +14,6 @@ public interface TranDao {
     int getCountByCondition(Map<String, Object> map);
 
     Tran getById(String id);
+
+    int changeStage(Tran t);
 }

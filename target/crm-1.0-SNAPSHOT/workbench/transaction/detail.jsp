@@ -59,6 +59,30 @@
 
 	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
+
+	/*
+	* json = {"阶段1": 可能性1, "阶段2": 可能性2, "阶段3": 可能性3, ...}
+	* */
+	var json = {
+
+		<%
+
+        Set<String> keys = pMap.keySet();
+
+        for(String key: keys){
+
+            String value = pMap.get(key);
+
+        %>
+
+		"<%=key%>": <%=value%>,
+
+		<%
+
+        }
+        %>
+
+	}
 	
 	$(function(){
 		$("#remark").focus(function(){
@@ -124,34 +148,13 @@
 
 		var stage = $("#stage").text();
 
-		var json = {
-
-			<%
-
-			Set<String> keys = pMap.keySet();
-
-			for(String key: keys){
-
-				String value = pMap.get(key);
-
-			%>
-
-			"<%=key%>": <%=value%>,
-
-			<%
-
-			}
-			%>
-
-		}
-
-		$("#possibility>b").text(json[stage]);
+		$("#possibility>b").html(json[stage]);
 
 		//展示交易“阶段历史”列表
-		showHistoryList(json);
+		showHistoryList();
 	});
 
-	function showHistoryList(json){
+	function showHistoryList(){
 
 		$.ajax({
 			url: "workbench/transaction/getTranHistory.do",
@@ -185,12 +188,48 @@
 	}
 
 	/**
-	 * 改变当前阶段
+	 * 改变当前交易的阶段
 	 * @param stage 这个图标对应的阶段
 	 * @param index 这个阶段的下标
 	 */
 	function changeStage(stage, index){
 
+		/*
+		* 1.先改变数据库中这条交易的阶段数据,生成一条新的交易历史
+		* 2.改变页面上的阶段和可能性数据
+		* 3.刷新所有阶段图标
+		* */
+		$.ajax({
+			url: "workbench/tran/changeStage.do",
+			data: {
+				"id": "${tran.id}",
+				"stage": stage,
+				"money": "${tran.money}",
+				"expectedDate": "${tran.expectedDate}",
+			},
+			type: "post",
+			dataType: "json",
+			success: function (response) {
+				/*response: {"success": true/false, "tran": tran}*/
+				if(response.success){
+
+					//2.改变页面上的阶段和可能性数据
+					$("#stage>b").html(stage);
+					$("#possibility>b").html(json[stage]);
+					$("#editBy").html(response.tran.editBy);
+					$("#editTime").html(response.tran.editTime);
+
+					//刷新交易历史列表
+					showHistoryList();
+
+					//3.刷新所有阶段图标
+					//改变阶段成功后，将所有的阶段图标重新判断，重新赋予样式及颜色
+
+				}else{
+					alert("阶段变更失败");
+				}
+			}
+		})
 
 	}
 	
@@ -410,7 +449,7 @@
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${tran.editTime}</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b id="editBy">${tran.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;" id="editTime">${tran.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">

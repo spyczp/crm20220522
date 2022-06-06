@@ -1,6 +1,7 @@
 package com.atom.crm.workbench.service.impl;
 
 import com.atom.crm.settings.dao.DicValueDao;
+import com.atom.crm.utils.DateTimeUtil;
 import com.atom.crm.utils.SqlSessionUtil;
 import com.atom.crm.utils.UUIDUtil;
 import com.atom.crm.vo.PaginationVO;
@@ -144,5 +145,36 @@ public class TranServiceImpl implements TranService {
         List<TranHistory> tranHistoryList = tranHistoryDao.getByTranId(tranId);
 
         return tranHistoryList;
+    }
+
+    @Override
+    public boolean changeStage(Tran t) {
+
+        boolean flag = true;
+
+        String stageId = dicValueDao.getIdByValue(t.getStage());
+        t.setStage(stageId);
+        //改变交易的阶段
+        int count1 = tranDao.changeStage(t);
+        if(count1 != 1){
+            flag = false;
+        }
+
+        //创建交易历史
+        TranHistory tranHistory = new TranHistory();
+        tranHistory.setId(UUIDUtil.getUUID());
+        tranHistory.setStage(stageId);
+        tranHistory.setMoney(t.getMoney());
+        tranHistory.setExpectedDate(t.getExpectedDate());
+        tranHistory.setCreateBy(t.getEditBy());
+        tranHistory.setCreateTime(DateTimeUtil.getSysTime());
+        tranHistory.setTranId(t.getId());
+
+        int count2 = tranHistoryDao.save(tranHistory);
+        if(count2 != 1){
+            flag = false;
+        }
+
+        return flag;
     }
 }

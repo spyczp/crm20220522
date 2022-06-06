@@ -5,6 +5,13 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.TranDao">
 
+    <update id="changeStage">
+
+        update tbl_tran set stage=#{stage}, editBy=#{editBy}, editTime=#{editTime}
+        where id=#{id}
+
+    </update>
+
     <select id="getById" resultType="com.atom.crm.workbench.domain.Tran">
 
         select

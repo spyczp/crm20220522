@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet({"/workbench/transaction/getUserList.do", "/workbench/transaction/getCustomerName.do", "/workbench/transaction/save.do",
-            "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do", "/workbench/transaction/getTranHistory.do"})
+            "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do", "/workbench/transaction/getTranHistory.do",
+            "/workbench/tran/changeStage.do"})
 public class TranController extends HttpServlet {
 
     @Override
@@ -48,7 +49,54 @@ public class TranController extends HttpServlet {
             doDetail(request, response);
         }else if("/workbench/transaction/getTranHistory.do".equals(servletPath)){
             doGetTranHistory(request, response);
+        }else if("/workbench/tran/changeStage.do".equals(servletPath)){
+            doChangeStage(request, response);
         }
+    }
+
+    private void doChangeStage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        /*
+        * 1.拿到浏览器提交的数据：
+        *   data: {
+				"id": "${tran.id}",
+				"stage": stage,
+				"money": "${tran.money}",
+				"expectedDate": "${tran.expectedDate}",
+			},
+		*
+		* 2.到数据库，tran表中修改阶段数据；到tran_history表中创建一条新的交易历史。
+		* 3.返回{"success": true/false, "tran": tran}给浏览器。tran: {"属性1": 属性值1, "属性2": 属性值2, "属性3": 属性值3, ...}
+        * */
+        System.out.println("改变交易的阶段，同时创建交易历史");
+
+        String id = request.getParameter("id");
+        String stage = request.getParameter("stage");
+        String money = request.getParameter("money");
+        String expectedDate = request.getParameter("expectedDate");
+
+        //这里createBy和createTime用作tran表的editBy和editTime；
+        //用作tran_history的createBy和createTime。
+        User user = (User) request.getSession(false).getAttribute("user");
+        String editBy = user.getName();
+        String editTime = DateTimeUtil.getSysTime();
+
+        Tran t = new Tran();
+        t.setId(id);
+        t.setStage(stage);
+        t.setMoney(money);
+        t.setExpectedDate(expectedDate);
+        t.setEditBy(editBy);
+        t.setEditTime(editTime);
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = ts.changeStage(t);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", flag);
+        map.put("tran", t);
+
+        PrintJson.printJsonObj(response, map);
     }
 
     private void doGetTranHistory(HttpServletRequest request, HttpServletResponse response)
