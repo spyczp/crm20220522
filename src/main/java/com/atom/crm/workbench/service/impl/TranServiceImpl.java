@@ -14,6 +14,7 @@ import com.atom.crm.workbench.domain.Tran;
 import com.atom.crm.workbench.domain.TranHistory;
 import com.atom.crm.workbench.service.TranService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -176,5 +177,28 @@ public class TranServiceImpl implements TranService {
         }
 
         return flag;
+    }
+
+    @Override
+    public Map<String, Object> getChart() {
+
+        int total = tranDao.getCount();
+
+        //[map1, map2, map3, ...]
+        //map1: { "value": 交易数, "name": '阶段1' }
+        List<Map<String, Object>> dataList = tranDao.getCountGroupByStage();
+
+
+        /*
+         * map = { "total": 总交易数, "dataList": [map1, map2, map3] }
+         * map1 = { "value": 交易数, "name": '阶段1' }
+         * map2 = { "value": 交易数, "name": '阶段2' }
+         * map3 = { "value": 交易数, "name": '阶段3' }
+         * */
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("dataList", dataList);
+
+        return map;
     }
 }

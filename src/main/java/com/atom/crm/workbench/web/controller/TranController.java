@@ -27,7 +27,7 @@ import java.util.Map;
 
 @WebServlet({"/workbench/transaction/getUserList.do", "/workbench/transaction/getCustomerName.do", "/workbench/transaction/save.do",
             "/workbench/transaction/getTransactionList.do", "/workbench/transaction/detail.do", "/workbench/transaction/getTranHistory.do",
-            "/workbench/tran/changeStage.do"})
+            "/workbench/tran/changeStage.do", "/workbench/transaction/getChart.do"})
 public class TranController extends HttpServlet {
 
     @Override
@@ -51,7 +51,35 @@ public class TranController extends HttpServlet {
             doGetTranHistory(request, response);
         }else if("/workbench/tran/changeStage.do".equals(servletPath)){
             doChangeStage(request, response);
+        }else if("/workbench/transaction/getChart.do".equals(servletPath)){
+            doGetChart(request, response);
         }
+    }
+
+    private void doGetChart(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        /*
+        * 给浏览器返回数据：{
+        *               "total": 总交易数,
+                        "dataList":
+                                [{ "value": 交易数, "name": '阶段1' },
+                                { "value": 交易数, "name": '阶段2' },
+                                { "value": 交易数, "name": '阶段3' },...]
+                         }
+        * */
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        /*
+        * map = { "total": 总交易数, "dataList": [map1, map2, map3] }
+        * map1 = { "value": 交易数, "name": '阶段1' }
+        * map2 = { "value": 交易数, "name": '阶段2' }
+        * map3 = { "value": 交易数, "name": '阶段3' }
+        * */
+        Map<String, Object> map = ts.getChart();
+
+        PrintJson.printJsonObj(response, map);
     }
 
     private void doChangeStage(HttpServletRequest request, HttpServletResponse response)

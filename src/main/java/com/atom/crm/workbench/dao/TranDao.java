@@ -16,4 +16,8 @@ public interface TranDao {
     Tran getById(String id);
 
     int changeStage(Tran t);
+
+    int getCount();
+
+    List<Map<String, Object>> getCountGroupByStage();
 }

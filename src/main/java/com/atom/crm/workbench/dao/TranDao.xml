@@ -5,6 +5,22 @@
 
 <mapper namespace="com.atom.crm.workbench.dao.TranDao">
 
+    <select id="getCountGroupByStage" resultType="java.util.Map">
+
+        select count(*) as value, dv.value as name
+        from tbl_tran t
+        join tbl_dic_value dv
+        on t.stage=dv.id
+        GROUP BY t.stage
+
+    </select>
+
+    <select id="getCount" resultType="int">
+
+        select count(*) from tbl_tran
+
+    </select>
+
     <update id="changeStage">
 
         update tbl_tran set stage=#{stage}, editBy=#{editBy}, editTime=#{editTime}

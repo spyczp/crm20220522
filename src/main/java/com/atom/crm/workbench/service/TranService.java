@@ -17,4 +17,6 @@ public interface TranService {
     List<TranHistory> getTranHistoryByTranId(String tranId);
 
     boolean changeStage(Tran t);
+
+    Map<String, Object> getChart();
 }
