@@ -42,7 +42,7 @@
                         },
                         tooltip: {
                             trigger: 'item',
-                            formatter: '{a} <br/>{b} : {c}%'
+                            formatter: '{a} <br/>{b} : {c}'
                         },
                         toolbox: {
                             feature: {
@@ -56,7 +56,7 @@
                         },
                         series: [
                             {
-                                name: 'Funnel',
+                                name: '交易阶段',
                                 type: 'funnel',
                                 left: '10%',
                                 top: 60,
